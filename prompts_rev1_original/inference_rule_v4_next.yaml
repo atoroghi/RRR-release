@@ -1,0 +1,60 @@
+system: |-
+  Task: given a question and a set of facts relevant to entities present in the question, concisely state the most Considering them, think step by step about how this question could be answered, and concisely state the most important general rule about the entities in the question that would help answer the question, but does not answer the question directly. Remember that the facts are only there to give you some context and they may be insufficient to answer the question. Your rules should follow the format: {An entity or Something relevant to it} must {some property} to {property of question}.
+  Your rule must be different from the rules identified as "Previously-chosen General rules", so try to pick other rules targetting different entities present in the question. First explain why you suppose this rule is important and then in the next line, write the rule. Remember that you have to provide a general rule and cannot leave the question unanswered.
+
+input_template: |-
+  Question: {{QUESTION}}
+  {% if ENTITIES %}
+  Entities: {{ENTITIES|join('\n')}}
+  {% endif %}
+  {% if FACTS %}
+  FACTS: {{FACTS|join('\n')}}
+  {% endif %}
+  {% if AXIOMS %}
+  Previously-chosen General rules: {{AXIOMS|join('\n')}}
+  {% endif %}
+
+few-shot:
+  - input:
+      QUESTION: |-
+        Could Georgios Koutsias's father have served on the House of Lords?
+        Previously-chosen General rules: Georgios Koutsias must have been alive during the time the House of Lords existed for Georgios Koutsias to be able to serve in it.
+        Facts: 1- Georgios Koutsias, is, Greek politician (born 1950)
+        2- Georgios Koutsias, instance of, human
+        3- Georgios Koutsias, occupation, association football player
+        4- Georgios Koutsias, country of citizenship, Greece
+        5- Georgios Koutsias, father, Nikolas Koutsias
+        6- House of Lords, instance of, upper house
+        7- House of Lords, part of, Parliament of the United Kingdom
+
+    output: |-
+        Knowing about the country of citizenship of Georgios Koutsias's father (Nikolas Koutsias) is crucial in answering the question because all members of the House of Lords have to be citizens of the United Kingdom and if we know he isn't a citizen of United Kingdom, we can answer the question.\n
+        Rule: Nikolas Koutsias had to be a citizen of the United Kingdom to have served on the House of Lords.
+  - input:
+      QUESTION: |-
+        Could Christian Zaccardo have bought a car from Bahman group?
+        Previously-chosen General rules: Christian Zaccardo had to be alive when Bahman group was producing cars.
+        Facts: 1- Christian Zaccardo, instance of, human
+        2- Christian Zaccardo, sex or gender, male
+        3- Christian Zaccardo, country of citizenship, italy
+        4- Christian Zaccardo, date of birth, 21 December 1981
+        5- Bahman group, instance of, business
+        6- Bahman group, industry, automotive
+        7- Bahman group, partner with, Mazda
+        8- Bahman group, located in, Tehran
+        9- Bahman group, target market, Iran
+    output: |-
+        Knowing about the places where Christian Zaccardo lived and places where Bahman group sold its products is crucial in answering the question because if he lived in places where Bahman group sold cars, he could have bought a car from them.\n
+        Rule: Bahman group must have sold products in Italy or Christian Zaccardo must have lived in Iran to make him able to buy a car from Bahman group.  
+  - input:
+      QUESTION: |-
+        Would Mehran Khaghani's wife talk on the phone? 
+        Previously-chosen General rules: Mehran Khaghani's wife must not be nonverbal to be able to talk on the phone.
+        Facts: 1- Mehran Khaghani, sex or gender, male
+        2- Mehran Khaghani, country of citizenship, United States of America
+        3- Mehran Khaghani, place of birth, London
+        4- Mehran Khaghani, educated at, Lexington High School
+        5- Mehran Khaghani, occupation, comedian
+    output: |-
+        Knowing about the time Mehran Khaghani's wife (whose name isn't mentioned in the question) lived is crucial in answering the question because if she lived before the invention of telephone, she couldn't have talked on the phone.\n
+        Rule: Mehran Khaghani must have lived after the invention of telephone to be able to talk on the phone.  

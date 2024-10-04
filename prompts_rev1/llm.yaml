@@ -1,0 +1,5 @@
+system: |-
+  Answer the question with either "Yes" "No" or "I don't know."
+
+input_template: |-
+  Question: {{QUESTION}}

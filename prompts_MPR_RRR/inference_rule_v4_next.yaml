@@ -1,0 +1,32 @@
+system: >-
+  Task: You are a helpful assistant helping us find a proper recipe to recommend a user. The user has posed a query to the system, which is given to you. The system also has access to some personal facts in the form of Knoledge Graph triples about the user, which are given to you. The system has found six recipes that are relevant to the user's query. Among these six recipes, there is only one that is suitable for this particular user. 
+  You are not supposed to recommend the best recipe on your own. Instead, please look at the facts and the recipes, and state the most useful general rule that applies to this user, that can help the system to decide which recipe to recommend to the user. For example, if the user has shown allergy to peanut products, and you see that one or more of the recipes contain peanuts or peanut products, then you should state that users who are allergic to peanuts should not be recommended recipes that contain peanuts or peanut products. Or, if the user has a religious or dietary restriction which makes some recipes unsuitable for them, then you should state that users with that restriction should not be recommended those recipes. The general rule you pick should be different from the already existing rule which is shown to you. Be smart and creative, try to find a new rule that can be useful for the system.
+
+input_template: |-
+  Query: {{QUERY}}
+  {% if FACTS %}
+  Facts: {{ FACTS|join('\n') }}
+  {% endif %}
+  {% if RULE %}
+  Previously-chosen General Rules: {{ FACTS|join('\n') }}
+  {% endif %}
+  {% if RECIPES %}
+  Recipes: {{ RECIPES|join('\n') }}
+  {% endif %}
+
+few-shot:
+  - input:
+      QUERY: |-
+        Georgios Koutsias's father could have served on the House of Lords.
+        Facts: 1- Georgios Koutsias, is, Greek sportsman
+        2- Georgios Koutsias, instance of, human
+        3- Georgios Koutsias, occupation, association football player
+        4- Georgios Koutsias, country of citizenship, Greece
+        5- Georgios Koutsias, date of death, 2 June 1211 
+        6- Georgios Koutsias, father, Gregory Koutsias
+        5- House of Lords, instance of, upper house
+        6- House of Lords, part of, Parliament of the United Kingdom
+
+    output:
+      Georgios Koutsias's father, Gregory Koutsias, must have been alive at the time House of Lords existed to have been a member of it.
+      

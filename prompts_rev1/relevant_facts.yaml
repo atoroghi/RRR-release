@@ -1,0 +1,92 @@
+system: >-
+  Task: You are a helpful assistant that is trying to help us answer a question. Given the question, a general rule that will help us answer the question, and a list of knowledge graph triples which we call them facts. Consider the facts and think about their relation to the question and general rule and try to extract the facts that may help answering the question. The facts may be insufficient to answer the question, but try your best to extract the relevant facts.
+  Your response must follow this format:
+  <an explanation> Therefore, the relevant facts are: <list of relevant facts>
+  Just copy the selected facts and don't generate facts on your own or adjust the facts in any way.
+  Try your best to select the relevant facts. If there are no relevant facts, just output "None".
+
+input_template: |-
+  Question: {{QUESTION}}
+  {% if HINTS %}
+  Hints: {{ HINTS|join('\n') }}
+  {% endif %}
+  {% if GENERAL_RULE %}
+  General Rule: {{GENERAL_RULE}}
+  {% endif %}
+  {% if FACTS %}
+  Facts: {{ FACTS|join('\n') }}
+  {% endif %}
+  Answer:
+
+few-shot:
+  - input:
+      QUESTION: |-
+        Did Paolo Maldini's predecessor as general manager of A.C. Milan come from the same country as him?
+        General Rule: Paolo Maldini and his predecessor as general manager of A.C. Milan must have the same nationality to come from the same country.
+        Facts:
+        1- (Paolo Maldini, member of clubs, A.C. Milan; start time, 1984; end time, 2009)
+        2- (Paolo Maldini, country of citizenship, Italy)
+        3- (Paolo Maldini, child, Christian Maldini)
+        4- (Paolo Maldini, child, Daniel Maldini)
+        5- (Paolo Maldini, spouse, Adriana Fossa; start time, 1994)
+        6- (Paolo Maldini, father, Cesare Maldini)
+        7- (Paolo Maldini, position held, General Manager of A.C. Milan; start time, 2018; replaces, Marco Fassone)
+        8- (Paolo Maldini, occupation, association football player)
+        9- (Paolo Maldini, date of birth, 1968/7/26)
+    output: |-
+      Answer: Although we don't have any facts about Marco Fassone's citizenship, there are some facts relevant to the question. Fact 2 is useful because it informs us of Paolo Maldini's citizenship. Fact 7 is also relevant because it tells us that Paolo Maldini's predecessor as general manager of A.C. Milan was Marco Fassone.
+      Therefore, the relevant facts are: 
+      (Paolo Maldini, country of citizenship, Italy)
+      (Paolo Maldini, position held, General Manager of A.C. Milan; start time, 2018; replaces, Marco Fassone)
+  - input:
+      QUESTION: |-
+        Could Aristotle have been a member of House of Lords?
+        General Rule: Aristotle must have lived during the time when the House of Lords was established or in existence.
+        Facts: 
+        1- (Aristotle, sex, male)
+        2- (Aristotle, date of birth, 384 BCE)
+        3- (Aristotle, field of study, philosophy)
+        4- (Aristotle, date of death, 322 BCE)
+        5- (Aristotle, place of death, Stageira)
+        6- (House of Lords, instance of, upper house)
+        7- (House of Lords, part of, Parliament of the United Kingdom)
+        8- (House of Lords, inception, 1801)
+    output: |-
+      Answer: We have facts that help us determine Aristotle lifespan and the time House of Lords was established. Fact 2 is useful to the question because it informs us of Aristotle's date of birth. Fact 4 is also relevant because it tells us Aristotle's life ended in 322 BCE. Fact 8 is also relevant because it tells us that the House of Lords was established in 1801.
+      Therefore, the relevant facts are:
+      (Aristotle, date of birth, +384 BCE)
+      (Aristotle, date of death, 322)
+      (House of Lords, inception, 1801)
+  - input:
+      QUESTION: |-
+        Would Mount Fuji stick out of the Sea of Japan?
+        General Rule: The height of Mount Fuji must be greater than the depth of the Sea of Japan to stick out of it.
+        Facts:
+        1- (Mount Fuji, instance of, active volcano)
+        2- (Mount Fuji, instance of, highest point)
+        3- (Mount Fuji, instance of, isolated peak)
+        4- (Mount Fuji, instance of, stratovolcano)
+        5- (Mount Fuji, elevation above sea level, 3777.24m)
+
+    output: |-
+      Answer: Although there are no facts about the depth of sea of Japan, there is a fact that helps us determent the height of Mount Fuji. Fact 5 is useful to the question because it informs us of the height of Mount Fuji.
+      Therefore, the relevant facts are:
+      (Mount Fuji, elevation above sea level, 3777.24m)
+  - input:
+      QUESTION: |-
+        Could Sheikh Zahed have played a video game?
+        General Rule: Video games should have been released before or during Sheikh Zahed's time and he must have access to video games to play them.
+        Facts:
+        1- (Sheikh Zahed, country of citizenship, Ilkhanate)
+        2- (Sheikh Zahed, place of birth, Lahijan)
+        3- (Sheikh Zahed, place of death, Lankaran)
+        4- (Sheikh Zahed, languages spoken, written or signed, Persian)
+        5- (Sheikh Zahed, occupation, poet)
+        6- (Sheikh Zahed, religion or worldview, Islam)
+        7- (Sheikh Zahed, date of birth, 1216)
+        8- (Sheikh Zahed, date of death, 1301)
+    output: |-
+      Answer: Although there are no facts about the existance of video games, we have information that help us identify Sheikh Zahed's lifespan. Fact 7 is useful to the question because it informs us of Sheikh Zahed's date of birth. Fact 8 is also relevant because it tells us Sheikh Zahed's life ended in 1301.
+      The relevant facts are:
+      (Sheikh Zahed, date of birth, 1216)
+      (Sheikh Zahed, date of death, 1301)

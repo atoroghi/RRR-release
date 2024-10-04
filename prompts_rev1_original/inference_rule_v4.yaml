@@ -1,0 +1,99 @@
+system: |-
+  Task: You are a helpful assistant trying to give us some guidance about answering a question. A set of knowledge graph triples called "facts" are given that may provide some contextual information about the question. However, if you don't find them useful, just ignore them and don't say anything about them. We may later look for additional facts to answer the question. 
+  Your mission is to think about how the question could be answered using general knowledge that people have plus facts like the ones provided, and then concisely state the most important general rule that would help someone to find the answer. But, you must not directly answer the question and you must not judge whether the question is answerable or not. Focus on what general information can help in giving a yes/no answer to the question.
+  Your response must follow the following format: "<an explanation> Therefore, a helpful rule is:\n Rule: <An entity or Something relevant to it> must <have some property> to <property identified in question>."
+  Try your best to use your general knowledge. Be smart. Don't ask or state conditions on obvious information that most average humans would know. You are in charge of helping with such knowledge so try to provide it in your rules rather than asking for it. If you can't produce a helpful rule or you think the question is not answerable, just try to make understanding the question easier by giving a hint or defining terms in the question and don't say anything else.
+
+
+input_template: |-
+  Question: {{QUESTION}}
+  {% if ENTITIES %}
+  Entities: {{ENTITIES|join('\n')}}
+  {% endif %}
+  {% if FACTS %}
+  FACTS: {{FACTS|join('\n')}}
+  {% endif %}
+
+few-shot:
+  - input:
+      QUESTION: |-
+        Could Georgios Koutsias's father have served in the House of Lords?
+        Entities: Georgios Koutsias, House of Lords
+        Facts: 1- Georgios Koutsias, is, Greek sportsman
+        2- Georgios Koutsias, instance of, human
+        3- Georgios Koutsias, occupation, association football player
+        4- Georgios Koutsias, country of citizenship, Greece
+        5- Georgios Koutsias, date of death, 2 June 1211 
+        6- Georgios Koutsias, father, Nikolas Koutsias
+        5- House of Lords, instance of, upper house
+        6- House of Lords, part of, Parliament of the United Kingdom
+
+    output: |-
+      The question asks us whether it was possible for Georgios Koutsias's father (Nikolas Koutsias) to have served in the House of Lords. The most important thing that decides whether a person could have served in an organization or had interaction with it is knowing whether the person lived during the time the organization existed or not. So, knowing about the time that Nikolas Koutsias lived is helpful because people have to be alive during the activity of an organization to be members of it. Therefore, a helpful rule is:\n
+      Rule: Georgios Koutsias's father (Nikolas Koutsias) must have been alive at the time House of Lords existed to have served in it.
+  - input:
+      QUESTION: |-
+        Could Balal Habashi have had a Facebook account?
+        Entities: Balal Habashi, Facebook
+        Facts: 1- Balal Habashi, instance of, human
+        2- Balal Habashi, occupation, soldier
+        3- Balal Habashi, date of birth, 1802
+        4- Balal Habashi, place of birth, Saudi Arabia
+    output: |-
+      The question asks us whether Balal Habashi could have had a Facebook account. Typically, people could have a Facebook account or have access to anything if they lived after its invention. So, knowing about the time that Balal Habashi lived is helpful. Therefore, a helpful rule is:\n
+      Rule: Balal Habashi must have been alive after Facebook was invented to have had a Facebook account.
+      
+  - input:
+      QUESTION: |-
+        Did Fakhri Nikzad and Gelareh Abbasi have similar taste in men?
+        Entities: Fakhri Nikzad, Gelareh Abbasi
+        Facts: 1- Fakhri Nikzad, instance of, human
+        2- Fakhri Nikzad, sex or gender, female
+        3- Fakhri Nikzad, country of citizenship, Iran
+        4- Fakhri Nikzad, manner of death, natural causes
+        5- Gelareh Abbasi, instance of, human
+        6- Gelareh Abbasi, date of birth, 20 July 1983
+        7- Gelareh Abbasi, place of birth, Tehran
+    output: |-
+      The question asks us whether Fakhri Nikzad and Gelareh Abbasi had similar tastes in men. Typically, if two people go in relationship with the same man or men with similar characteristics, they have similar tastes in men. So, knowing about the Fakhri Nikzad and Gelareh Abbasi's partners is helpful. Therefore, a helpful rule is:\n
+      Rule: Fakhri Nikzad and Gelareh Abbasi must have chosen the same partners or partners with similar characteristics to have similar tastes in men.
+      
+  - input:
+      QUESTION: |-
+        Would Mehran Khaghani's spouse accuse someone of being antisemitic if she faced religious discrimination? 
+        Entities: Mehran Khaghani, antisemitism
+        Facts: 1- Mehran Khaghani, sex or gender, male
+        2- Mehran Khaghani, country of citizenship, United States of America
+        3- Mehran Khaghani, place of birth, London
+        4- Mehran Khaghani, educated at, Lexington High School
+        5- Mehran Khaghani, occupation, comedian
+    output: |-
+      The question asks us whether Mehran Khaghani's spouse (whose name isn't identified in the facts) would accuse someone of being antisemitic if she faced religous discrimination. Typically, Jewish people can accuse someone of being antisemitic if they face religous discrimination. So, knowing about the religion of Mehran Khaghani's spouse is helpful. Therefore, a helpful rule is:\n
+      Rule: Mehran Khaghani'spouse (whose name isn't identified in the facts) must be jewish to accuse someone of being antisemitic if he faced religious discrimination.
+
+  - input:
+      QUESTION: |-
+        Could a Persian Leopard fit in an Airbus A330?
+        Entities: Persian Leopard, Airbus A330
+        Facts: 1- Persian Leopard, instance of, leopard
+        2- Persian Leopard, taxon name, Panthera pardus tulliana
+        3- Persian Leopard, subclass of, leopard
+        4- Airbus A330, instance of, wide-body aircraft
+        5- Airbus A330, manufacturer, Airbus
+        6- Airbus A330, has use, commercial aviation
+    output: |-
+      The question asks us whether a Persian Leopard would fit in an Airbus A330. Typically, if we have two objects, the smaller objects can fit in the larger object. So, knowing about their dimensions is helpful. Therefore, a helpful rule is:\n
+      Rule: The dimensions of a Persian Leopard must be smaller than the dimensions of an Airbus A330 to fit in it.
+  - input:
+      QUESTION: |-
+        Is the animal present in the flag of Walid Soliman's homeland able to transport through the air?
+        Entities: Walid Soliman
+        Facts: 1- Walid Soliman, instance of, human
+        2- Walid Soliman, occupation, association football player
+        3- Walid Soliman, date of birth, 1 October 1984
+        4- Walid Soliman, place of birth, Cairo
+    output: |-
+      The question asks us if the animal present in the flag of Walid Soliman's homeland is able to transport through the air. Typically, animals can transport through the air if they can fly. So, knowing about what animal is present in the flag of Walid Soliman's homeland is helpful. Therefore, a helpful rule is:\n
+      Rule: The animal present in the flag of Walid Soliman's homeland must be an animal that is able to fly to be able to transport through the air.
+      
+      

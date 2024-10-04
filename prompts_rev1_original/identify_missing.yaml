@@ -1,0 +1,59 @@
+system: >-
+  Task: You are a helpful assistant trying to help in finding the required information to answer a given question. A the set of general rules and a list of knowledge graph triples, which we name facts, are already provided. Based on these, an answer was propsed, but it was not identified as being correct and certain. You are asked to identify what other facts are required to give a certain answer to the question. The facts you ask for will be obtained from a knowledge graph. So, try to extract the name of entity or entities about which we should obtain facts and mention it in your answer. For example, if knowing about Bill Clinton's daughter's religion is necessary, and among the already provided facts you see ('Bill Clinton', 'child', 'Chelsea Clinton'), you should respond "we need to know Chelsea Clinton's religion".
+  Finally If the provided facts and general rules are already sufficient to give a certain answer to the question, your response should only be: "nothing".
+
+input_template: |-
+  Question: {{QUESTION}}
+  {% if HINTS %}
+  Hints: {{ HINTS|join('\n') }}
+  {% endif %}
+  {% if GENERAL_RULE %}
+  General Rule: {{GENERAL_RULE}}
+  {% endif %}
+  {% if FACTS %}
+  Facts: {{ FACTS|join(' / ') }}
+  {% endif %}
+  {% if PROPOSED_ANSWER %}
+  Proposed Answer: {{ PROPOSED_ANSWER }}
+  {% endif %}
+
+
+few-shot:
+  - input:
+      QUESTION: |-
+        Could George Koutsias's father be a member of House of Lords?
+        Hints: 1- George Koutsias: Greek football player.
+        2- House of Lords: upper house in the Parliament of the United Kingdom.
+        General rules: George Koutsias's father must have been alive at the time House of Lords was established or in existence to be able to be member of it.
+        Facts: 1- George Koutsias, is, Greek sportsman
+        2- Georgios Koutsias, instance of, human
+        3- Georgios Koutsias, occupation, footballer
+        4- Georgios Koutsias, father, Nikolas Koutsias
+        5- Nikolas Koutsias, country of citizenship, Greece
+        6- House of Lords, instance of, upper house
+        7- House of Lords, part of, Parliament of the United Kingdom; start date 1801
+        Proposed Answer: Based on General rule, George Koutsias's father must have been alive at the time House of Lords was established or in existence to be able to be member of it. Fact 4 tells us that George Koutsias's father is Nikolas Koutsias. Fact 7 tells us that House of Lords was established in 1801. However, we cannot determine if George Koutsias was alive during that time. Therefore, the answer is: I don't know.
+    output: |-
+      Answer: We need to know the date of birth and date of death of Nikolas Koutsias to answer the question.
+  - input:
+      QUESTION: |-
+        Did Paolo Maldini's wife come from the same country as him?
+        Hints: 1- Paolo Maldini: Italian association football player.
+        General rules: Paolo Maldini's wife's nationality must be Italian for her to come from the same country as him.
+        Facts: 1- Paolo Maldini, spouse, Adriana Fossa
+        2- Paolo Maldini, place of birth, Milan
+        3- Paolo Maldini, date of birth, 1968/07/24
+        Proposed Answer: Based on the general rule, we need to determine if Paolo Maldini and his wife were born in the same country. Fact 1 tells us that Paolo Maldini's wife is Adriana Fossa. Since Adriana Fossa also sounds like an Italian name, it is plausible to assume that she is also Italian. Therefore, the answer is: Yes, Paolo Maldini's wife came from the same country as him.
+    output: |-
+      Answer: We cannot make assumptions about people's birthplaces. We need to know the place of birth of Adriana Fossa to answer the question.
+  - input:
+      QUESTION: |-
+        Would a Pict be confused by Old English?
+        Hints: 1- Picts: ancient and medieval tribal confederation in northern Britain.
+        2- Old English: earliest historical form of English.
+        General rules: A Pict must have not known Old English to be confused by it.
+        Facts: 1- pict, language used, Pictish
+        Proposed Answer: Based on the general rule, a Pict would be confused by Old English if they didn't know it. Fact 1 tells us that Picts used the Pictish language. However, we cannot determine for sure if a Pict would be confused by Old English. Therefore, the answer is: I don't know.
+
+    output: |-
+      Answer: nothing. The facts are already sufficient. Fact 1 states that Picts used the Pictish language, not Old English, and the general rule tells us that knowing this is enough to give a certain answer. So, since a Pict wouldn't know Old English, he would be confused by it.

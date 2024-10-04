@@ -1,0 +1,72 @@
+system: |-
+  Task: given a question about a number of entities and a set of facts relevant to them, a few candidate general rules have been proposed to help answer the question. Among the provided general rules pick the one that best satisfies these conditions:
+  1- is most likely to be useful in determining the answer to the question.
+  2- does not try to answer the question directly and only provides general information.
+  3- could be verified based on the provided facts or other factual knowledge obtained from wikidata.
+  Please explain why you made this selected, and in the next line copy the general rule you picked and paste it in the output box.
+  You have to select one of the provided general rules that will help answer the question and cannot select a rule that claims the question cannot be answered with the provided information.
+
+input_template: |-
+  Question: {{QUESTION}}
+  {% if ENTITIES %}
+  Entities: {{ENTITIES|join('\n')}}
+  {% endif %}
+  {% if FACTS %}
+  FACTS: {{FACTS|join('\n')}}
+  {% endif %}
+  {% if AXIOMS %}
+  Candidate General rules: {{AXIOMS|join('\n')}}
+  {% endif %}
+
+few-shot:
+  - input:
+      QUESTION: |-
+        Could Georgios Koutsias have served on the House of Lords?
+        Entities: Georgios Koutsias, House of Lords
+        Facts: 1- Georgios Koutsias, is, Greek politician (born 1950)
+        2- Georgios Koutsias, instance of, human
+        3- Georgios Koutsias, occupation, association football player
+        4- Georgios Koutsias, country of citizenship, Greece
+        5- House of Lords, instance of, upper house
+        6- House of Lords, part of, Parliament of the United Kingdom
+        Candidate General rules: 1- Georgios Koutsias must have had interest to serve on the House of Lords to have served on the House of Lords.
+        2- Georgios Koutsias must have been a citizen of the United Kingdom to be able to become a member of House of Lords. 
+        3- Georgios Koutsias could not have served on the House of Lords because he was not a citizen of the United Kingdom.
+
+    output: |-
+        Rules 2 and 3 suggest focusing on the citizenship of Georgios Koutsias which is crucial in answering the question because all members of the House of Lords have to be citizens of the United Kingdom and if we know he isn't a citizen of United Kingdom, we can answer the question. Rule 1 suggests focusing on George Koutsias' interests, but people's interests are harder to be determined using knowledge graph facts than their country of citizenship. Since rule 1 is not verifiable and rule 3 tries to answer the question directly, rule 2 is the best choice.\n
+        Selected rule: Georgios Koutsias must have been a citizen of the United Kingdom to be able to become a member of House of Lords.
+  - input:
+      QUESTION: |-
+        Could Christian Zaccardo have bought a car from Bahman group?
+        Entities: Christian Zaccardo, Bahman group
+        Facts: 1- Christian Zaccardo, instance of, human
+        2- Christian Zaccardo, sex or gender, male
+        3- Christian Zaccardo, country of citizenship, italy
+        4- Christian Zaccardo, date of birth, 21 December 1981
+        5- Bahman group, instance of, business
+        6- Bahman group, industry, automotive
+        7- Bahman group, partner with, Mazda
+        8- Bahman group, located in, Tehran
+        9- Bahman group, target market, Iran
+        Candidate General rules: 1- Christian Zaccardo must have lived in Iran to be able to buy a car from Bahman group.
+        2- Bahman group must have sold products in Italy or Christian Zaccardo must have lived in Iran to make him able to buy a car from Bahman group.  
+        3- Christian Zaccardo had to be a citizen of Iran to be able to buy a car from Iran.
+    output: |-
+        Rules 1 and 2 suggest focusing on the location of Christian Zaccardo and Bahman group. Rule 3 suggests focusing on the citizenship of Christian Zaccardo. However, it is not plausible to assume that Christian Zaccardo had to be a citizen of Iran to be able to buy a car from Iran. Rule 1 and rule 2 are both plausible and helpful in answering the question. Since rule 2 is more general than rule 1, rule 2 is the best choice.\n
+        Selected rule: Bahman group must have sold products in Italy or Christian Zaccardo must have lived in Iran to make him able to buy a car from Bahman group.  
+  - input:
+      QUESTION: |-
+        Would Mehran Khaghani's wife talk on the phone? 
+        Entities: Mehran Khaghani
+        Facts: 1- Mehran Khaghani, sex or gender, male
+        2- Mehran Khaghani, country of citizenship, United States of America
+        3- Mehran Khaghani, place of birth, London
+        4- Mehran Khaghani, educated at, Lexington High School
+        5- Mehran Khaghani, occupation, comedian
+        Candidate General rules: 1- Mehran Khaghani's wife must have not been nonverbal to be able to talk on the phone.
+        2- Mehran Khaghani's wife must have owned a telephone to be able to talk on the phone.
+        3- Mehran Khaghani's wife must have been alive after the telephone was invented to be able to talk on the phone.
+    output: |-
+        Rule 1 is plausible and we might be able to verify it if we find evidence about Mehran Khaghani's wife being able to talk. Rule 2 is not plausible because Mehran Khaghani's wife could have used a public telephone to talk on the phone. Rule 3 is plausible and we might be able to verify it if we find evidence about Mehran Khaghani's wife being alive after the invention of telephone. Since rule 3 is more general than rule 1, and knowledge graphs often include information about people's lifespan, rule 3 is the best choice.\n
+        Selected rule: Mehran Khaghani's wife must have been alive after the telephone was invented to be able to talk on the phone.

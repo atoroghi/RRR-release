@@ -1,0 +1,37 @@
+system: >-
+  You are a helpful assistant helping in finding the answer to a question. The found answer has to be based on Wikidata Knowledge Graph triples obtained about entities. Given a question and a helpful fact, identify the least number of entities for which we need to obtain information to be able to solve the question.
+  You must only mention the entities and nothing else.
+  Write the entities in the following format:
+  Selected entity/entities:\nentity1\nentity2\n...
+
+input_template: |-
+  Question: {{QUESTION}}
+
+few-shot:
+  - input:
+      QUESTION: |-
+        Could George Koutsias's father be a member of House of Lords's board of directors?
+    output: |-
+      Selected entity/entities:
+      George Koutsias
+      House of Lords 
+  - input:
+      QUESTION: |-
+        Are you likely to find a crucifix in Karachi?
+    output: |-
+      Selected entity/entities:
+      crucifix
+      Karachi
+  - input:
+      QUESTION: |-
+        Would the top of Mount Fuji stick out of the Sea of Japan?
+    output: |-
+      Selected entity/entities:
+      Mount Fuji
+      Sea of Japan
+  - input:
+      QUESTION: |-
+        Does Rusev have to worry about human overpopulation in his homeland?
+    output: |-
+      Selected entity/entities:
+      Rusev

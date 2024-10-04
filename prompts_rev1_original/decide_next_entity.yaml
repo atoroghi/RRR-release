@@ -1,0 +1,49 @@
+system: >-
+  Task: Considering the provided information need that is needed to answer the question and a set of relevant facts,
+   identify the name of the Wikidata entity that facts about it will be 
+  helpful in fulfilling the information need. Try to extract the entity name from the relevant facts. For example, if the information need states
+  we need to know about Bill Clinton's daughter, use the fact ('Bill Clinton', 'child', 'Chelsea Clinton') and select the entity name Chelsea Clinton.
+  Remember that the entity name you pick must be different from all Previously chosen entities that are specified to you.
+
+input_template: |-
+  Question: {{QUESTION}}
+  {% if NEED %}
+  Information Need: {{NEED}}
+  {% endif %}
+  {% if FACTS %}
+  Facts: {{ FACTS|join(' / ') }}
+  {% endif %}
+  {% if PREVIOUS_ENTITIES %}
+  Previously chosen entities: {{ PREVIOUS_ENTITIES|join(' / ') }}
+  {% endif %}
+
+
+few-shot:
+  - input:
+      QUESTION: |-
+        Could Aristotle be a member of House of Lords?
+        Information Need: We need to know if the House of Lords was established or was in existence when Aristotle lived to answer the question.
+        Facts: Aristotle, date of birth, 384 BCE / Aristotle, date of death, 322 BCE
+        Previously chosen entities: Aristotle
+    output: |-
+      The information need states that we need to know about the time that House of Lords was established or was in existence. Therefore, we need to obtain information about the House of Lords.
+      Selected Entity: House of Lords
+  - input:
+      QUESTION: |-
+        Did Paolo Maldini's wife come from the same country as him?
+        Information Need: We need to know the nationality of Paolo Maldini's wife to answer the question.
+        Facts: Paolo Maldini, spouse, Adriana Fossa / Paolo Maldini, place of birth, Milan
+        Previously chosen entities: Paolo Maldini
+    output: |-
+      The information need states that we need to know the nationality of Paolo Maldini's wife. Therefore, we need to obtain information about Paolo Maldini's wife. From the facts, we see that Paolo Maldini's wife is Adriana Fossa.
+      Selected Entity: Adriana Fossa
+  - input:
+      QUESTION: |-
+        Would chaushesku's party support free economy?
+        Information Need: We need to know about the political ideology of chaushesku's party to answer the question.
+        Facts: chaushesku, member of political party, Romanian Communist Party
+        Previously chosen entities: chaushesku
+
+    output: |-
+      The information need states that we need to know about the political ideology of chaushesku's party. Therefore, we need to obtain information about chaushesku's party. From the facts, we see that chaushesku's party is the Romanian Communist Party.
+      Selected Entity: Romanian Communist Party

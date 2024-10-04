@@ -1,0 +1,88 @@
+system: >-
+  Task: You are a helpful assistant that is trying to help us answer a question. You are given the question, a number of general rules, and a list of knowledge graph triples which we call them facts that may be helpful in finding the answer. First, go over the facts and general rules one by one. Try to think of how each fact may help you answer the question. Then, if you don't have explicit information about something or the general rule isn't helpful, try to use your general knowledge of the world and make plausible assumptions to find the answer. Be smart. Don't ask for obvious information that most average humans would know.
+  Your response must follow the following format:
+  Answer: <your reason> Therefore, the answer is: <your final answer(beginning with "Yes", "No", or "I don't know")>
+  You must only begin your response with "Yes" or "No" if you want to give the answer to the question. Try your best to use facts, general rules, and plausible assumptions to give the answer. If using the current set of general rules and facts is not enough to answer the question even with plausible assumptions, in the beginning of your answer, you must only say "I don't know".
+
+input_template: |-
+  Question: {{QUESTION}}
+  {% if HINTS %}
+  Hints: {{ HINTS|join('\n') }}
+  {% endif %}
+  {% if GENERAL_RULE %}
+  General Rule: {{GENERAL_RULE}}
+  {% endif %}
+  {% if FACTS %}
+  Facts: {{ FACTS|join('\n') }}
+  {% endif %}
+
+
+few-shot:
+  - input:
+      QUESTION: |-
+        Could Georgios Koutsias's father have served on the House of Lords?
+        General rules: 1- Georgios Koutsias's father must have been be alive and present during the time the House of Lords existed and be a citizen of the United Kingdom.
+        Facts: 1- Georgios Koutsias, is, Greek sportsman
+        2- Georgios Koutsias, instance of, human
+        3- Georgios Koutsias, occupation, footballer
+        4- Georgios Koutsias, father, Nikolas Koutsias
+        5- Nikolas Koutsias, country of citizenship, Greece
+        6- Nikolas Koutsias, date of birth, 1964
+        7- House of Lords, instance of, upper house
+        8- House of Lords, part of, Parliament of the United Kingdom; start date 1801
+    output: |-
+        Answer: General rule 1 tells us that Georgios Koutsias's father must have been alive during the time the House of Lords existed and be a United Kingdom citizen. Fact 4 tells us that Georgios Koutsias's father is Nikolas Koutsias. Fact 8 tells us that House of Lords existed since 1801, and Fact 6 tells us that Nikolas Koutsias was born in 1964. However, Fact 5 tells us that Nikolas Koutsias is a citizen of Greece, not the United Kingdom. Therefore, the answer is: No, Georgios Koutsias's father (Nikolas Koutsias) could not have served on the House of Lords because of not being a United Kingdom citizen.
+
+  - input:
+      QUESTION: |-
+        Did Paolo Maldini's predesessor as the general manager of A.C. Milan come from the same country as him?
+        General rules: 1- The birth place of Paolo Maldini and Paolo Maldini's predessor as the general manager of A.C. Milan must be located in the same country for them to come from the same country.
+        Facts: 1- Paolo Maldini, spouse, Adriana Fossa
+        2- Paolo Maldini, place of birth, Milan
+        3- Paolo Maldini, country of citizenship, Italy
+        4- Paolo Maldini, occupation, association football player
+        5- Paolo Maldini, date of birth, 1968/07/24
+        6- (Paolo Maldini, position held, General Manager of A.C. Milan; start time, 2018; replaces, Marco Fassone)
+
+    output: >-
+        Answer: Based on General rule 1, the birth places of Paolo Maldini and his predecessor in A.C. Milan must be located in the same country for the answer to be yes. Fact 2 tells us that Paolo Maldini's birth place is Milan which is located in Italy, and Fact 6 tells us that Paolo Maldini's predecessor was Marco Fassone, but it doesn't tell us where he was born. If we knew the birthplace of Marco Fassone, we could have answered the question, but we can't make any plausible assumption about Marco Fassone's birthplace. Therefore, the answer is: I don't know.
+  - input:
+      QUESTION: |-
+        Is Ash part of Gelareh Abbasi's diet?
+        General rules: 1- Gelareh Abbasi has to like Iranian cuisine and not to have dietary restrictions that prevent her from eating Ash.
+        Facts: 1- Gelareh Abbasi, instance of, human
+        2- Gelareh Abbasi, date of birth, +1991-05-04T00:00:00Z
+        3- Gelareh Abbasi, place of birth, Tehran
+        4- Gelareh Abbasi, country of citizenship, Iran
+        5- Ash, is, type of Aush
+        6- Ash, subclass of, soup
+        7- Ash, part of, Iranian cuisine
+        8- Ash, part of, Azerbaijani cuisine
+    output: >-
+        Answer: Based on General rule 1, Gelareh Abbasi must be interested in Iranian cuisine and not having dietary restrictions to be likely for Ash to be part of her diet. Fact 4 tells us that Gelareh Abbasi is Iranian and Fact 7 tells us that Ash is part of Iranian cuisine. Although the facts don't provide explicit information about Gelareh Abbasi's interest in Ash and her dietary restrictions, we are allowed to make plausible assumptions based on general knowledge. We know that typically, Iranians like Iranian cuisine. Since Gelareh Abbasi is an Iranian citizen, it is plausible to assume that Gelareh Abbasi will also like Iranian cuisine and since no food restrictions are mentioned about her, Ash is likely to be part of her diet. Therefore, the answer is: Yes, Ash is part of Gelareh Abbasi's diet.
+  - input:
+      QUESTION: |-
+        Does Tom Avni celebrate hanukkah?
+        General rules: Tom Avni must be interested in religous events to celebrate hanukkah.
+        Facts: 1- Tom Avni, is, Israeli actor and television host
+        2- Tom Avni, sex or gender, male
+        3- Tom Avni, date of birth, +1986-04-23T00:00:00Z
+        4- Tom Avni, place of birth, Eilat
+        5- Tom Avni, religion or worldview, Judaism
+        6- Tom Avni, work period (start), 1990
+    output: >-
+        Answer: Based on general rule 1, Tom Avni must be interested in religous events to celebrate hanukkah. Fact 5 tells us that Tom Avbu is Jewish. Although the facts don't provide explicit information about Tom Avni's interest in religous ceremonies, we are allowed to make plausible assumptions based on general knowledge. We know that typically, Jews celebrate Jewish ceremonies. Since Tom avni Tom Avni is Jewish, it is plausible to assume that he is likely to celebrate hanukkah too. Therefore, the answer is: Yes, it is likely for Tom Avni to celebrate hanukkah.
+  - input:
+      QUESTION: |-
+        Could a Pirouz fit in an Airbus A330?
+        General rules: 1- The question asks us to judge about the possibility of fitting Pirouz in an Airbus A330. We need to know the dimensions of a Pirouz and dimensions of an Airbus A330 to answer the question.
+        Facts: 1- Pirouz, instance of, Persian Leopard
+        2- Pirouz, date of birth, 2010
+        3- Persian Leopard, instance of, mammal
+        4- Persian Leopard, taxon name, Panthera pardus tulliana
+        5- Persian Leopard, subclass of, leopard
+        6- Airbus A330, instance of, wide-body aircraft
+        7- Airbus A330, manufacturer, Airbus
+        8- Airbus A330, has use, commercial aviation
+    output: >-
+        Answer: The general rule doesn't provide explicit information about how we can decide whether pirouz would fit in an Airbus A330 or not. However, we can use our general knowledge. We know that dimensions of an object must be smaller than the dimensions of the other object to fit in it. Fact 1 tells us that Pirouz is a Persian Leopard and Fact 3 tells us that a Persian Leopard is a mammal and Fact 6 tells us that Airbus A330 is a wide-body aircraft. Although the facts don't provide explicit information about the dimensions of Pirouz and Airbus A330, we are allowed to make plausible assumptions based on general knowledge. We know that typically, leopards are much smaller than aircrafts. So, it is plausible to assume that the dimensions of Pirouz are considerably smaller than the dimensions of Airbus A330. Therefore, the answer is: Yes, Pirouz can fit in an Airbus A330.

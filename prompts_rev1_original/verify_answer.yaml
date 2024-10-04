@@ -1,0 +1,96 @@
+system: >-
+  Task: Considering the provided question, the set of general rules and facts, an answer has been proposed. Do you evaluate this answer to be correct and grounded on the general rules and facts, and based on plausible assumptions? Look for any errors and mistakes. If the provided answer is "I don't know", but you consider the question to be answerable with making plausible assumptions, explain what assumptions could help in identifying the answer.
+  your answer to this question must follow this template:
+  Evaluation: <your reason> Therefore, my evaluation of the answer is: <your evaluation(beginning with "Yes" or "No")>
+  If the provided answer is correct, begin your answer with "Yes". If the answer is incorrect, state the reason why the answer is incorrect and/or not grounded on the general rules and facts, and begin your evaluation with "No". Just state your evaluation of the answer and don't repeat the answer.
+
+input_template: |-
+  Question: {{QUESTION}}
+  {% if HINTS %}
+  Hints: {{ HINTS|join('\n') }}
+  {% endif %}
+  {% if GENERAL_RULE %}
+  General Rule: {{GENERAL_RULE}}
+  {% endif %}
+  {% if FACTS %}
+  Facts: {{ FACTS|join(' / ') }}
+  {% endif %}
+  {% if PROPOSED_ANSWER %}
+  Proposed Answer: {{ PROPOSED_ANSWER }}
+  {% endif %}
+
+few-shot:
+  - input:
+      QUESTION: |-
+          Could Aristotle be a member of House of Lords?
+          General rules: 1- Aristotle must have been alive at the time House of Lords was established or in existence to be able to be member of it.
+          Facts: 1- Aristotle, date of birth, 384 BCE
+          2- Aristotle, date of death, 322 BCE
+          3- House of Lords, is, upper house in the Parliament of the United Kingdom.
+          Proposed Answer: Based on General rule 1, Aristotle had to be alive when the House of Lords was established, but Facts 1 and 2 tell us that Aristotle lived between 384 and 322 BCE, so he was dead when the House of Lords was established. Therefore, the answer is: No, Aristotle could not have been a member of House of Lords.
+    output: |-
+      Evaluation: Although based on Facts 1 and 2 Aristotle lived between 384 and 322 BCE, and based on General rule 1, Aristotle had to be alive when the House of Lords was established, we don't have any information about the date when the House of Lords was established. Therefore, my evaluation of the answer is: No, the proposed answer is not correct and grounded on the general rules and facts. We need to know the date when the House of Lords was established to be able to answer this question.
+  - input:
+      QUESTION: |-
+          Would a Pict be confused by Old English?
+          General rules: 1- A Pict must have not known Old English to be confused by it.
+          Facts: 1- pict, language used, Pictish
+          2- Old English, is, earliest historical form of English.
+          Proposed Answer: Based on General rule 1, A pict would be confused by Old English if they didn't know this language. Fact 1 tells us that Picts used the Pictish language, Therefore, the answer is: Yes, a Pict would be confused by Old English.
+    output: |-
+      Evaluation: Based on the genral rule, a pict would be confused by Old English if they didn't know it and Fact 1 tells us that a Pict knew Pictish language. Since there is no other evidence of picts knowing old English, the answer is correct. Therefore, my evaluation of the answer is: Yes, the proposed answer is correct and grounded on the general rules and facts.
+  - input:
+      QUESTION: |-
+          Could Abraham Lincoln's death have been prevented by using Narcan?
+          General rules: 1- Narcan can prevent deaths caused by opioid overdose.
+          Facts: 1- Abraham Lincoln, cause of death, shot to the head
+          2- Narcan, is, Opioid receptor antagonist
+          Proposed Answer: Based on the Fact 1, Abraham Lincoln was killed by being shot to the head, but based on General rule 1, Narcan can prevent deaths caused by opioid overdose. Therefore, the answer is: No, since Abraham Lincoln wasn't experiencing opioid overdose, Narcan couldn't have prevented his death.
+    output: >-
+      Evaluation: Based on the general rule, Abraham Lincoln's death could have been prevented by using Narcan if he was experiencing opioid overdose, but based on Fact 1, Abraham Lincoln was killed by being shot to the head and not an opioid overdose. Therefore, my evaluation of the answer is: Yes, the proposed answer is correct and grounded on the general rules and facts.
+
+  - input:
+      QUESTION: |-
+          Is Ash Reshteh part of Gelareh Abbasi's diet?
+          General rules: 1- Gelareh Abbasi has to like Iranian cuisine and not to have dietary restrictions that prevent her from eating Ash Reshteh.
+          Facts: 1- Gelareh Abbasi, instance of, human
+          2- Gelareh Abbasi, date of birth, 20 July 1983
+          3- Gelareh Abbasi, place of birth, Tehran
+          4- Gelareh Abbasi, country of citizenship, Iran
+          5- Ash Reshteh, is, type of Aush
+          6- Ash Reshteh, subclass of, soup
+          7- Ash Reshteh, part of, Iranian cuisine
+          8- Ash Reshteh, part of, Azerbaijani cuisine
+          Proposed Answer: Based on General rule 1, if Gelareh Abbasi is interested in Iranian cuisine and she doesn't have dietary restrictions, it is likely for her to eat Ash Reshteh. Based on Fact 4, Gelareh Abbasi is Iranian and based on Fact 7, Ash Reshteh is part of Iranian cuisine. Although the facts don't provide explicit information about Gelareh Abbasi's interest in Ash Reshteh, it is plausible to assume that since most Iranians like Iranian cuisine and Gelareh Abbasi is an Iranian citizen, and we don't have any information about her food restrictions, Ash Reshteh is likely to be part of her diet. Therefore, the answer is: Yes, Ash Reshteh is likely to be part of Gelareh Abbasi's diet.
+    output: >-
+      Evaluation: Although the answer is based on the assumptions, its assumptions are plauble. It is plausible to assume that Iranians such as Gelareh Abbasi are likely to enjoy Iranian cuisine, and since we don't have any information available about Gelareh Abbasi's dietary restrictions, it is plausible to assume she doesn't have any. Therefore, my evaluation of the answer is: Yes, the proposed answer is correct and grounded on the general rules and facts.
+    
+  - input:
+      QUESTION: |-
+          Could Manuel Almunia'a son fit in an Airbus A330?
+          General rules: 1- The dimensions of Manuel Almunia's son must be smaller than the dimensions of an Airbus A330 to fit in it.
+          Facts: 1- Manuel Almunia, instance of, human
+          2- Manuel Almunia, sex or gender, male
+          3- Manuel Almunia, country of citizenship, Spain
+          4- Manuel Almunia, has child, Pedro Almunia
+          5- airbus A330, instance of, wide-body aircraft
+          6- airbus A330, manufacturer, Airbus
+          7- airbus A330, length, 58.82m
+          8- airbus A330, width, 60.3m
+          Proposed Answer: Based on general rule 1, the dimensions of Manuel Almunia's son must be smaller than the dimensions of an Airbus A330 to fit in it. Fact 4 tells us that Manuel Almunia has a son named Pedro Almunia, but we don't have any information about Pedro Almunia's dimensions. Therefore, the answer is: I don't know.
+    output: >-
+      Evaluation: Although we don't have any information about Pedro Almunia's dimensions, since he is a human and all human beings are much smaller than a wide-body aircraft such as Airbus A330, it is plausible to assume that Pedro Almunia's dimensions are smaller than the dimensions of an Airbus A330. Therefore, my evaluation of the answer is: No, the proposed answer is not correct. We can make the plausible assumption that Pedro Almunia's dimensions are smaller than the dimensions of an Airbus A330, so he can fit in it.
+  - input:
+      QUESTION: |-
+          Has Kakha Kaladze lived longer than Eldar Kurtanidze?
+          General rules: 1- Kakha Kaladze must have been born before Eldar Kurtanidze to have lived longer than him.
+          Facts: 1- Kakha Kaladze, date of birth, 27 February 1978
+          2- Kakha Kaladze, place of birth, Samtredia
+          3- Kakha Kaladze, country of citizenship, Georgia
+          4- Eldar Kurtanidze, date of birth, 16 April 1972
+          5- Eldar Kurtanidze, place of birth, Tbilisi
+          Proposed Answer: Based on general rule 1, Kakha Kaladze must have been born before Eldar Kurtanidze to have lived longer than him. Fact 1 tells us that Kakha Kaladze was born on 27 February 1978, and Fact 4 tells us that Eldar Kurtanidze was born on 16 April 1972. Therefore, the answer is: Yes, Kakha Kaladze has lived longer than Eldar Kurtanidze.
+    output: >-
+      Evaluation: Fact 1 tells us that Kakha Kaladze was born on 27 February 1978, and Fact 4 tells us that Eldar Kurtanidze was born on 16 April 1972. Since 1978 is after 1972, Kakha Kaladze was born after Eldar Kurtanidze. Therefore, my evaluation of the answer is: No, the proposed answer is incorrect because Kakha Kaladze was born after Eldar Kurtanidze, so he has not lived longer than him.
+
+      

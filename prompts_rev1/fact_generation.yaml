@@ -1,0 +1,39 @@
+system: >-
+  Task: given a question and a set of facts relevant to entities present in the question, concisely state the most important general rule that would help answer the question. Please don't try to answer the question and just generate the fact.
+
+input_template: |-
+  Question: {{QUESTION}}
+  {% if HINTS %}
+  Hints: {{HINTS|join('\n')}}
+  {% endif %}
+  
+
+
+few-shot:
+  - input:
+      QUESTION: |-
+        Was Aristotle a member of House of Lords?
+        Hints: 1- Aristotle: Classical Greek philosopher and polymath (384-322 BC)
+        2- House of Lords: upper house in the Parliament of the United Kingdom
+    output: |-
+      Rule: Aristotle must have been alive at the time House of Lords was established to become a member of it. 
+  - input:
+      QUESTION: |-
+        Would the top of Mount Fuji stick out of the Sea of Japan?
+        Hints: 1- Mount Fuji: mountain in Yamanashi and Shizuoka Prefectures, Japan
+        2- Sea of Japan: sea between Japan and Russia
+    output: |-
+      Rule: The height of Mount Fuji must be greater than the depth of the Sea of Japan to stick out of it.
+  - input:
+      QUESTION: |-
+        Are you likely to find a crucifix in Karachi?
+        Hints: 1- Karachi: largest city in Pakistan
+    output: |-
+      Rule: Karachi must have a significant Christian population to contain crucifixes.
+  - input:
+      QUESTION: |-
+        Was Dorothea Wendling from same place Porsche originated?
+        Hints: 1- Dorothea Wendling: German operatic soprano (1736-1811),
+        2- Porsche: German automobile manufacturer
+    output: |-
+      Rule: Dorothea Wendling's place of birth and the place were Porsche originated must be the same to make the answer yes.

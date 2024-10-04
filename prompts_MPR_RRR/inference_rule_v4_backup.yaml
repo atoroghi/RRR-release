@@ -1,0 +1,92 @@
+system: >-
+  Task: You are a helpful assistant helping us find a proper recipe to recommend a user. The user has posed a query to the system, which is given to you. We are also given some personal facts about the user in the form of Knowledge Graph triples. The system has a few recipe options to choose from. Among these recipes, there is only one that is suitable for this particular user. 
+  You are not supposed to recommend the best recipe on your own. Instead, please look at the facts and the recipes, and state the most useful general rule that applies to this user, that can help the system decide which recipe is most relevant. For example, if the user has shown allergy to peanut products, and you see that one or more of the recipes contain peanuts or peanut products, then you should state that users who are allergic to peanuts should not be recommended recipes that contain peanuts or peanut products. Or, if the user has a religious or dietary restriction which makes some recipes unsuitable for them, then you should state that users with that restriction should not be recommended those recipes. You should choose the rule by paying attention to both the recipe ingredients and user facts. First, state your reason and then, say "Rule: " and then the rule you have chosen.
+
+input_template: |-
+  Query: {{QUERY}}
+  {% if FACTS %}
+  Facts: {{ FACTS|join('\n') }}
+  {% endif %}
+  {% if RECIPES %}
+  Recipes: {{ RECIPES|join('\n') }}
+  {% endif %}
+
+few-shot:
+  - input:
+      QUERY: |-
+        I want a fancy meat dish for a special occasion.
+        Facts:
+        1- (user, occupation, teacher)
+        2- (user, age, 19)
+        3- (user, sex, male)
+        4- (user, country of origin, Canada)
+        5- (user, sexual orientation, heterosexual)
+        6- (user, member of party, NDP)
+        7- (user, religion, Islam)
+        8- (user, shown allergy to, pineapple)
+        9- (user, country of citizenship, Canada)
+        10- (user, sports played, Karate)
+        Recipes: Recipe 1- ingredients: 2 cloves garlic, 1 cup chicken broth, 2 tbsp soy sauce, 2 tbsp olive oil, 4 pork steaks, Salt and pepper.
+        instructions: 1- Season the steask with salt and pepper. 2- Sear pork in olive oil. 3- Add garlic. 4- Add broth and soy sauce. 5- Return pork to the pan and cook. 6- Serve with rice.
+        Recipe 2- ingredients: 4 beef steaks, Salt and pepper, 2 tbsp olive oil, 1 tsp dried rosemary, 2 cloves garlic, 2 tbsp balsamic vinegar, 1 tbsp soy sauce.
+        instructions: 1- Season the steaks with salt and pepper. 2- Sear in olive oil. 3- Sauté garlic and rosemary. 4- Add balsamic vinegar and soy sauce. 5- Return beef to the skillet, simmer. 6- add butter.
+        Recipe 3- ingredients: 1 cup lentils, 1 onion, 2 carrots, 2 celery stalks, 2 cloves garlic, 1 can diced tomatoes, 6 cups broth, 1 tsp ground cumin
+        instructions: 1- Sauté onion, carrots, and celery in olive oil. 2- Add garlic and cook. 3- Add lentils, tomatoes, and broth. 4- Simmer until lentils. 5- Season with cumin, salt, and pepper.
+
+
+    output: |-
+      The user has asked for a fancy meat dish for a special occasion. Based on the user's facts, we see that the user has shown allergy to pineapple. Also, since the user practices Islam, it is important to note that the user may not consume pork (which is in one of the recipes). Therefore, a useful rule is:
+      Rule: Users who are allergic to pineapple should not be recommended recipes that contain pineapple. Also, users who practice Islam should not be recommended recipes that contain pork.
+      
+  - input:
+      QUERY: |-
+        I want a quick and easy dessert for tonight.
+        Facts:
+        1 - (user, occupation, biologist)
+        2 - (user, age, 49)
+        3 - (user, sex, female)
+        4- (user, country of origin, Taiwan)
+        5- (user, sexual orientation, heterosexual)
+        6- (user, shown allergy to, Snickers)
+        7- (user, shown allergy to, Reese's)
+        8- (user, medical condition, lactose intolerance)
+        9- (user, place of birth, Taipei)
+        10- (user, has pet, Judy)
+        Recipes: Recipe 1- 2 cups whole milk, 1 cup sugar, 3 tablespoons cornstarch, 1 teaspoon vanilla extract, mixed berries
+        instructions: 1- In a saucepan, whisk together milk, sugar, and cornstarch. 2- Cook over medium heat. 3- Remove from heat and stir in vanilla. 4- Pour into serving dishes and chill. 5- Serve with mixed berries.
+        Recipe 2- ingredients: 1 cup lentils, 1 onion, 2 carrots, sliced, 2 celery stalks, 2 cloves garlic, minced, 1 can diced tomatoes, 6 cups vegetable broth, 1 tsp ground cumin
+        instructions: 1- Sauté onion, carrots, and celery in olive oil. 2- Add garlic and cook. 3- Add lentils, tomatoes, and broth. 4- Simmer. 5- Season with cumin, salt, and pepper.
+        Recipe 3- ingredients: 1 can crushed tomatoes, 1 onion, diced, 2 cloves garlic, minced, 4 cups vegetable broth, 1 tsp dried basil, 1/2 tsp dried oregano, Salt and pepper, 1/4 cup fresh basil, 2 tbsp olive oil
+        Recipe 4- ingredients: 2 cups sugar, 1 stick unsalted butter, 1 cup milk, 1/4 cup cocoa powder, 3 cups oats, 1 cup creamy peanut butter, 1 teaspoon vanilla extract, salt
+        instructions: 1- In a saucepan, combine sugar, butter, milk, and cocoa. 2- Bring to a boil and cook for 1 minute. 3- Remove from heat and stir in oats, peanut butter, vanilla, and salt. 4- Drop spoonfuls onto waxed paper and let cool.
+
+    output: |-
+      The user has asked for a quick and easy dessert for tonight. Based on the user's facts, we see that the user has shown allergy to Snickers and Reese's, two products that mainly consist chocolate and peanut. Also, the user has lactose intolerance. Therefore, a useful rule is:
+      Rule: Users who are allergic to Snickers and Reese's should not be recommended recipes that contain chocolate and peanut. Also, users with lactose intolerance should not be recommended recipes that contain milk or heavy cream.
+  - input:
+      QUERY: |-
+        I want a healthy and filling meal for dinner.
+        Facts:
+        1 - (user, occupation, nurse)
+        2 - (user, age, 34)
+        3 - (user, gender, male)
+        4- (user, country of origin, United States)
+        5- (user, sexual orientation, heterosexual)
+        6- (user, hast pet, snowball)
+        7- (user, medication used, insulin)
+        8- (user, reads, Torah)
+        9- (user, medical condition, tendonitis)
+        10- (user, sports played, basketball)
+        Recipes: Recipe 1- ingredients: 1 cup quinoa, 2 cups water, 2 chicken breasts, 1 tablespoon olive oil, Salt and pepper, 1 teaspoon dried oregano, 1 teaspoon paprika, 2 cups mixed vegetables, 1 lemon, Fresh herbs
+        1- Cook quinoa: In a saucepan, combine quinoa and water or broth. Bring to a boil, then reduce heat, and simmer for 15-20 minutes, or until quinoa is cooked and water is absorbed. 2- Season chicken: Rub the chicken breasts with olive oil, salt, pepper, dried oregano, and paprika. 3- Grill chicken: Preheat a grill or grill pan over medium-high heat. Grill the chicken for 6-8 minutes per side or until fully cooked. Let it rest for a few minutes before slicing. 4- Roast vegetables: Toss mixed vegetables with olive oil, salt, and pepper. Roast in the oven at 400°F (200°C) for about 15-20 minutes or until tender. 5- Assemble: Divide quinoa, chicken, and vegetables among plates. Squeeze lemon juice over the chicken and garnish with fresh herbs.
+        Recipe 2- ingredients: 8 oz spaghetti, 4 cloves garlic, thinly sliced, 1/2 cup extra virgin olive oil, Red pepper, Salt and pepper, Fresh parsley
+        instructions: 1- Cook spaghetti according to package instructions. 2- In a large skillet, heat olive oil over medium heat. Add garlic and red pepper. Cook until garlic is golden. 3- Add cooked spaghetti to the skillet. Toss to coat. 4- Season with salt and pepper. 5- Garnish with fresh parsley.
+        Recipe 3- ingredients: 8 oz pasta, 1 cup cooked ham, 1/2 cup grated Parmesan, 1/4 cup extra virgin olive oil, 3 cloves garlic, Red pepper flakes, Salt and black pepper, Fresh parsley
+        instructions: 1- Cook pasta according to package instructions. 2- In a large skillet, heat olive oil over medium heat. Add garlic and red pepper flakes. Cook until garlic is golden. 3- Add cooked pasta and ham to the skillet. Toss to coat. 4- Add Parmesan and toss again. 5- Season with salt and pepper. 6- Garnish with fresh parsley.
+        Recipe 4- ingredients: 8 oz pasta, 1/2 lb Italian sausage, casings removed, 1 can diced tomatoes, 1/2 cup heavy cream, 1/4 cup grated Pecorino cheese, 2 tablespoons tomato paste, 2 cloves garlic, minced, Fresh basil leaves, Salt and black pepper
+        instructions: 1- Cook pasta according to package instructions. 2- In a large skillet, cook sausage over medium heat until browned. 3- Add garlic and cook until fragrant. 4- Add diced tomatoes, tomato paste, and heavy cream. Simmer for 5-7 minutes. 5- Add cooked pasta and Pecorino cheese to the skillet. Toss to coat. 6- Season with salt and pepper. 7- Garnish with fresh basil.
+
+    output: |-
+      The user has asked for a healthy and filling meal for dinner. Based on the user's facts, we see that the user uses insulin and reads Torah. Therefore, a useful rule is:
+      Rule: Users who use insulin should not be recommended recipes that contain high sugar content. Also, users who read Torah should not be recommended recipes that contain pork.
+

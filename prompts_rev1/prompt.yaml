@@ -1,0 +1,27 @@
+system: |-
+  You are a helpful assistant.
+
+input_template: |-
+  {% if FACTS %}
+  Here are the relevant facts:
+  {{ FACTS|join(', ') }}
+  {% endif %}
+  Answer the question: {{ QUESTION }}
+
+few-shot:
+  - input:
+      QUESTION: Is Bob a doctor?
+      FACTS:
+        - (Bob, age, 29)
+        - (Bob, occupation, student)
+    output: |-
+      No.
+      Bob is a student, not a doctor.
+  - input:
+      QUESTION: Is Bob a student?
+      FACTS:
+        - (Bob, age, 29)
+        - (Bob, occupation, student)
+    output: |-
+      Yes.
+      Bob is a student.

@@ -1,0 +1,75 @@
+system: >-
+  Task: You are a helpful assistant helping us find a proper recipe to recommend a user. The user has posed a query, which is shown to you. You also have some personal facts about the user in the form of Knowledge Graph triples. You are a smart assistant that wants to help the recommender know the user, their restrictions, and their needs based on the personal facts. Using the personal facts, extract and state the most useful rule that applies to this user and will help in recommending a recipe. For example, if the user has shown allergy to peanut products, then you should state that the recommended recipe must not contain peanuts or peanut products. Or, there might be religious or dietary restriction that you may be able to infer from the facts which makes some recipes unsuitable for them. Your rule must be correct in the realworld, so avoid making up rules that are not true. For example, a rule stating Muslims avoid alcohol is correct, but a rule mentioning Muslims avoid peanuts isn't always correct. First, state your reason and then, say "Rule: " and then the rule you have chosen.
+
+input_template: |-
+  Query: {{QUERY}}
+  {% if FACTS %}
+  Facts: {{ FACTS|join('\n') }}
+  {% endif %}
+  {% if RECIPES %}
+  Recipes: {{ RECIPES|join('\n') }}
+  {% endif %}
+
+few-shot:
+  - input:
+      QUERY: |-
+        I want a fancy meat dish for a special occasion.
+        Facts:
+        1- (user, occupation, teacher)
+        2- (user, age, 19)
+        3- (user, sex, male)
+        4- (user, country of origin, Canada)
+        5- (user, sexual orientation, heterosexual)
+        6- (user, member of party, NDP)
+        7- (user, religion, Islam)
+        8- (user, shown allergy to, lentils)
+        9- (user, country of citizenship, Canada)
+        10- (user, sports played, Karate)
+
+
+    output: |-
+      The user has asked for a fancy meat dish for a special occasion. Based on the user's facts, we see that the user has shown allergy to lentils. Also, the user practices Islam which means that he avoids pork, ham and alcohol. Therefore, a useful rule is:
+      Rule: The user is a Muslim who is allergic to lentils, so he should not be recommended recipes that contain lentils, pork, ham, or any kind of alcoholic beverages.
+      
+  - input:
+      QUERY: |-
+        I want a quick and easy dessert for tonight.
+        Facts:
+        1 - (user, occupation, biologist)
+        2 - (user, age, 49)
+        3 - (user, sex, female)
+        4- (user, country of origin, Taiwan)
+        5- (user, sexual orientation, heterosexual)
+        6- (user, shown allergy to, Snickers)
+        7- (user, shown allergy to, Reese's)
+        8- (user, medical condition, lactose intolerance)
+        9- (user, place of birth, Taipei)
+        10- (user, has pet, Judy)
+
+
+    output: |-
+      Based on the user's facts, we see that the user has shown allergy to Snickers and Reese's, two products that mainly consist chocolate and peanut, which means that she is allergic to chocolates and peanutes. Also, the user has lactose intolerance. Therefore, a useful rule is:
+      Rule: The user is allergic to peanuts and chocolates and has lactose intolerance, so she should not be recommended recipes that contain chocolate, peanut, milk, or dairy products.
+ 
+  - input:
+      QUERY: |-
+        I want a healthy and filling meal for dinner.
+        Facts:
+        1 - (user, occupation, nurse)
+        2 - (user, age, 34)
+        3 - (user, gender, male)
+        4- (user, country of origin, United States)
+        5- (user, sexual orientation, heterosexual)
+        6- (user, hast pet, snowball)
+        7- (user, medication used, insulin)
+        8- (user, reads, Torah)
+        9- (user, medical condition, tendonitis)
+        10- (user, sports played, basketball)
+
+
+
+    output: |-
+      Based on the user's facts, we see that the user uses insulin which means he has type 1 diabetes and reads Torah, which means that he is Jewish. Therefore, a useful rule is:
+      Rule: The user is Jewish and has type 1 diabetes, so he should not be recommended recipes that are sweet or contain sugar, simple carbohydrates, or pork or ham.
+      
+

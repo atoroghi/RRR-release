@@ -1,0 +1,39 @@
+SPARQL_prompt:
+  - system: >-
+      Given the provided question, generate a few sub-questions and SPARQL queries to be run on the Wikidata KG to retrieve the required knowledge for answering each sub-question.
+      Instead of using the actual QID and property IDs, use the actual entity and property names in brackets.
+
+  - input1: >-
+      Question: Did Pablo Escobar's pseudonym collection outshine Robert Moses Grove's?
+  - output1: |-
+      Sub-question 1: What are Pablo Escobar's pseudonyms?
+      SPARQL query 1: SELECT ?answer ?answerLabel WHERE {wd:[Pablo Escobar] wdt:[pseudonym] ?answer. SERVICE wikibase:label { bd:serviceParam wikibase:language "[AUTO_LANGUAGE],en".}}
+      Sub-question 2: What are Robert Moses Grove's pseudonyms?
+      SPARQL query 2: SELECT ?answer ?answerLabel WHERE {wd:[Robert Moses Grove] wdt:[pseudonym] ?answer. SERVICE wikibase:label { bd:serviceParam wikibase:language "[AUTO_LANGUAGE],en".}}
+  - input2: >-
+      Question: Did the Beatles write any music in the Disco genre?
+  - output2: |-
+      Sub-question 1: What are the Beatles' music genres?
+      SPARQL query 1: SELECT ?answer ?answerLabel WHERE {wd:[the Beatles] wdt:[genre] ?answer. SERVICE wikibase:label { bd:serviceParam wikibase:language "[AUTO_LANGUAGE],en".}}
+  - input3: >-
+      Question: {QUESTION}
+
+
+
+Final_Answer_prompt:
+  - system: >-
+      Answer the question either with "Yes" "No" or "I don't know" considering the sub-questions and their answers.
+  - input1: >-
+      Question: Did Pablo Escobar's pseudonym collection outshine Robert Moses Grove's?
+      Sub-question 1: What are Pablo Escobar's pseudonyms? Answer: ['El Doctor', 'Don Pablo', 'El Diablo', 'El Padrino', 'El Patrón', 'El Baron', 'El Duro', 'El Mágico', 'El Tutur', 'El Zar de la Cocaína']
+      Sub-question 2: What are Robert Moses Grove's pseudonyms? Answer: ['Lefty']
+  - output1: >-
+      Answer: Yes, Pablo Escobar has multiple pseudonyms while Robert Moses Grove has only one.
+  - input2: >-
+      Question: Did the Beatles write any music in the Disco genre?
+      Sub-question 1: What are the Beatles' music genres? Answer: ['rock music', 'pop music', 'psychedelic rock', 'pop rock', 'art rock']
+  - output2: >-
+      Answer: No, the Beatles did not write any music in the Disco genre.
+  - input3: >-
+      Question: {QUESTION}\n
+      {SUBQUESTIONS}    

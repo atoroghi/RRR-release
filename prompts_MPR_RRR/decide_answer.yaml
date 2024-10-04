@@ -1,0 +1,74 @@
+system: >-
+  Task: You are a helpful assistant that is recommending recipes to a user. You are given the user query, and a General rule about the user's needs and restrictions. The list of six recipes that you have to choose among them is also given. Among these six recipes, there is only one recipe that satisfies both the query and the personal requirements of the user. Considering the user query and the general rule, read through all ingredients and instructions for all recipes. Be smart and use your knowledge to satisfy the user's requirements. For example, if you are asked to avoid recipes containing peanuts for a user, you should also avoid recipes that contain Snicker rolls or peanut butters. However, you must not introduce new irrelevant restrictions, such as avoiding cream for someone with peanut allergy. In your response, first, explain why ingredients of this recipe match the requirements, and then say: "Therefore, the selected recipe is: " and then the number of the selected recipe. Use your best judgement and recommend one recipe that is most suitable. If you found two recipes satisfying the mentioned requirements, choose the one that is more aligned with the user's personal requirements. For example, if the user needs to avoid excessive use of sugar due to medical condition, choose the recipe that contains less or no sugar. If an ingredient isn't mentioned in ingredients and instructions, it means that the recipe doesn't contain that ingredient.
+
+input_template: |-
+  Query: {{QUERY}}
+  {% if GENERAL_RULE %}
+  General rule: {{GENERAL_RULE|join('\n')}}
+  {% endif %}
+  {% if RECIPES %}
+  Recipes: {{ RECIPES|join('\n') }}
+  {% endif %}
+
+few-shot:
+  - input:
+      QUERY: |-
+        I want a fancy meat dish for a special occasion.
+        General rule: The user is a Muslim who is allergic to pineapples, so he should not be recommended recipes that contain pineapples, pork, ham, or alcohol.
+        Recipes: Recipe 1- ingredients: 2 cloves garlic, broth, soy sauce, tequila, Salt and pepper.
+        instructions: 1- Season the steak with salt and pepper. 2- Sear pork in tequila. 3- Add garlic. 4- Add broth and soy sauce. 5- Return pork to the pan and cook. 6- Serve with rice.
+        Recipe 2- ingredients: 4 beef steaks, Salt and pepper, 1 tsp dried rosemary, 2 cloves garlic
+        instructions: 1- Season the steaks with salt and pepper. 2- Sear in olive oil. 3- Sauté garlic and rosemary. 4- Return beef to the skillet, simmer. 6- add butter.
+        Recipe 3- ingredients: lentils, 1 onion, 2 carrots, 2 cloves garlic, broth, cumin
+        instructions: 1- Sauté onion, carrots, and celery in olive oil. 2- Add garlic and cook. 3- Add lentils, tomatoes, and broth. 4- Simmer until lentils. 5- Season with cumin, salt, and pepper.
+        Recipe 4- ingredients: 2 ripe bananas, 1 cup oats, chocolate chips, cinnamon
+        instructions: 1- Preheat oven. 2- Mix bananas, oats, chocolate chips, and cinnamon. 3- Drop spoonfuls onto a baking sheet. 4- Bake.
+        Recipe 5- ingredients: Cherry tomatoes, mozzarella, basil
+        instructions: 1- Thread tomatoes, mozzarella, and basil onto skewers. 2- Drizzle with balsamic glaze.
+        Recipe 6- ingredients: Brussels sprouts, 3 tbsp olive oil, 2 tablespoons grated Parmesan, 3 cloves garlic
+        instructions: 1- Preheat oven to 400°F. 2- Toss Brussels sprouts with olive oil, garlic, and Parmesan. 3- Roast until crispy.
+
+
+    output: |-
+      Recipes 1 and 2 are both fancy meat dishes. But, instructions of Recipe 1 tell us that it contains pork and tequila which is an alcoholic drink. Recipe 2 is a meat dish with beef steak, olive oil, garlic, rosemary, salt and pepper, none of which contain pork, ham, alcohol or pineapples. Therefore, the selected recipe is: 2.
+      
+  - input:
+      QUERY: |-
+        I want a quick and easy dessert for tonight.
+        General rule: The user is allergic to peanuts and chocolates and has lactose intolerance, so she should not be recommended recipes that contain chocolate, peanut, milk, or dairy products.
+        Recipes: Recipe 1- 2 cups milk, sugar, cornstarch, vanilla extract, berries
+        instructions: 1- Whisk milk, sugar, and cornstarch. 2- Cook over medium heat. 3- stir in vanilla. 4- Serve with mixed berries.
+        Recipe 2- ingredients: lentils, 1 onion, 2 carrots, 2 cloves garlic, broth, cumin
+        instructions: 1- Sauté onion, carrots, and celery in olive oil. 2- Add garlic and cook. 3- Add lentils, tomatoes, and broth. 4- Simmer. 5- Season with cumin, salt, and pepper.
+        Recipe 3- ingredients: frozen mango chunks, coconut cream, maple syrup, lime juice
+        instructions: 1- combine all ingredients until smooth and creamy. 2- Pour into serving dishes and chill. 3- Serve with lime.
+        Recipe 4- ingredients: sugar, unsalted butter, milk, cocoa powder, 3 cups oats, 1 cup creamy peanut butter, 1 teaspoon vanilla extract, salt
+        instructions: 1- Combine sugar, butter, milk, and cocoa. 2- Cook for 1 minute. 3- Remove from heat and stir in oats, peanut butter, vanilla, and salt. 4- Drop spoonfuls onto waxed paper.
+        Recipe 5- ingredients: Cherry tomatoes, mozzarella, basil
+        instructions:1- Thread tomatoes, mozzarella, and basil onto skewers. 2- Drizzle with balsamic glaze.
+        Recipe 6- ingredients: Brussels sprouts, olive oil, Parmesan, 3 cloves garlic
+        instructions: 1- Preheat oven. 2- Toss Brussels sprouts with olive oil, garlic, and Parmesan. 3- Roast until crispy.
+
+    output: |-
+       Recipes 1 and 3 are both quick and easy desserts. But, instructions of Recipe 1 tell us that it contains milk. Recipe 3 is a quick and easy dessert that contains mango chunks, coconut cream, maple syryp, and lime juice, none of which contain chocolate, peanut, milk or any dairy products. Therefore, the selected recipe is: 3.
+ 
+  - input:
+      QUERY: |-
+        I want a healthy and filling meal for dinner.
+        General rule: The user is Jewish and has type 1 diabetes, so he should not be recommended recipes that contain high sugar content, simple carbohydrates, or pork or ham.
+        Recipes: Recipe 1- ingredients: quinoa, 2 chicken breasts, olive oil, salt, pepper
+        instructions: 1- Cook quinoa. Then simmer for 15 minutes. 2- Rub the chicken breasts with olive oil, salt, and pepper. 3- Grill the chicken for 6 minutes. 4- Squeeze lemon juice over the chicken.
+        Recipe 2- ingredients: spaghetti, 4 cloves garlic, olive oil, Salt and pepper, parsley
+        instructions: 1- Cook spaghetti. 2- Add olive oil, garlic and red pepper. 3- Garnish with fresh parsley.
+        Recipe 3- ingredients: pasta, cooked ham, Parmesan, olive oil, 3 cloves garlic
+        instructions: 1- Cook pasta. 2- In a large skillet, heat olive oil. Add garlic and red pepper flakes. 3- Add Parmesan and season with salt and pepper.
+        Recipe 4- ingredients: Ripe bananas, Rolled oats, Chocolate chips, Cinnamon
+        instructions: 1- Preheat oven. 2- Mix bananas, oats, chocolate chips, and cinnamon. 3- Drop spoonfuls onto a baking sheet. Bake.
+        Recipe 5- ingredients: Cherry tomatoes, mozzarella, basil
+        instructions: 1- Thread tomatoes, mozzarella, and basil. 2- Drizzle with balsamic glaze.
+        Recipe 6- ingredients: 4 chicken breasts, 2 tablespoons olive oil, 1 tablespoon lemon juice, 1 teaspoon dried herbs, salt and pepper
+        instructions: 1- Preheat oven to 375°F. 2- Rub chicken with olive oil, lemon juice, herbs, salt, and pepper. 3- Bake for 20-25 minutes.
+
+    output: |-
+      Recipes 1 and 6 are both healthy and filling meals that don't contain high sugar content, simple carbohydrates, or pork or ham. But, instructions of Recipe 1 tell us that it contains quinoa which has carbohydrates. Recipe 6 is a healthy and filling meal for dinner with chicken breasts, olive oil, lemon juice, herbs, salt and pepper, none of which contain a considerable source of carbohydrates. Therefore, the selected recipe is: 6.
+      
