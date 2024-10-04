@@ -1,0 +1,55 @@
+system: |-
+  Task: You will be given a claim that is either correct or incorrect, and a set of facts that aim to give you some contextual information about the entities present in the claim.
+  Considering them, concisely state the most important general rule that would help identify whether the claim is correct or not, but does not directly give an answer.
+  Your rule must be different from the rules identified as "Previously-chosen Rules of Inference".
+
+input_template: |-
+  Claim: {{QUESTION}}
+  {% if AXIOMS %}
+  Previously-chosen Rules of Inference: {{AXIOMS|join('\n')}}
+  {% endif %}
+  {% if FACTS %}
+  FACTS: {{FACTS|join('\n')}}
+  {% endif %}
+  Rule of inference: 
+
+few-shot:
+  - input:
+      QUESTION: |-
+        Georgios Koutsias's father could have served on the House of Lords.
+        Previously-chosen Rules of Inference: Georgios Koutsias's father, Gregory Koutsias, must have been alive during the time the House of Lords existed for him to be able to serve in it.
+        Facts: 1- Georgios Koutsias, is, Greek politician (born 1950)
+        2- Georgios Koutsias, instance of, human
+        3- Georgios Koutsias, occupation, association football player
+        4- Georgios Koutsias, country of citizenship, Greece
+        5- House of Lords, instance of, upper house
+        6- House of Lords, part of, Parliament of the United Kingdom
+
+    output:
+        Georgios Koutsias's father, Gregory Koutsias, had to be from the United Kingdom to have served on the House of Lords.
+  - input:
+      QUESTION: |-
+        Christian Zaccardo could have bought a car from Bahman group.
+        Previously-chosen Rules of Inference: Christian Zaccardo had to be alive when Bahman group was producing cars.
+        Facts: 1- Christian Zaccardo, instance of, human
+        2- Christian Zaccardo, sex or gender, male
+        3- Christian Zaccardo, country of citizenship, italy
+        4- Christian Zaccardo, date of birth, 21 December 1981
+        5- Bahman group, instance of, business
+        6- Bahman group, industry, automotive
+        7- Bahman group, partner with, Mazda
+        8- Bahman group, located in, Tehran
+        9- Bahman group, target market, Iran
+    output: |-
+        Christian Zaccardo had to live in Iran and be able to afford a car.  
+  - input:
+      QUESTION: |-
+        Mehran Khaghani was able to talk on the phone.
+        Previously-chosen Rules of Inference: Mehran Khaghani must not be nonverbal to be able to talk on the phone.
+        Facts: 1- Mehran Khaghani, sex or gender, male
+        2- Mehran Khaghani, country of citizenship, United States of America
+        3- Mehran Khaghani, place of birth, London
+        4- Mehran Khaghani, educated at, Lexington High School
+        5- Mehran Khaghani, occupation, comedian
+    output:
+      Mehran Khaghani must have lived after the invention of telephone to be able to talk on the phone.  

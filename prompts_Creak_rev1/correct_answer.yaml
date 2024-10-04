@@ -1,0 +1,56 @@
+system: >-
+  Task: Considering the provided claim, the set of general rules and facts, an answer has been proposed to the question: "Is this claim correct?". This answer has been evaluated. Considering this
+  evaluation, propose a modified answer. Begin your answer with "Yes", "No", or "I don't know". If the provided rules and facts are not sufficient to answer the question, begin your response with "I don't know".
+
+input_template: |-
+  Claim: {{QUESTION}}
+  {% if HINTS %}
+  Hints: {{ HINTS|join('\n') }}
+  {% endif %}
+  {% if GENERAL_RULE %}
+  General Rule: {{GENERAL_RULE}}
+  {% endif %}
+  {% if FACTS %}
+  Facts: {{ FACTS|join(' / ') }}
+  {% endif %}
+  {% if PROPOSED_ANSWER %}
+  Proposed Answer: {{ PROPOSED_ANSWER }}
+  {% endif %}
+  {% if EVALUATION %}
+  Evaluation: {{ EVALUATION }}
+  {% endif %}
+
+few-shot:
+  - input:
+      QUESTION: |-
+        Aristotle could be a member of House of Lords.
+        Hints: 1- Aristotle: Classical Greek philosopher and polymath (384-322 BC).
+        2- House of Lords: upper house in the Parliament of the United Kingdom.
+        General rules: 1- Aristotle must have been alive at the time House of Lords was established or in existence to be able to be member of it.
+        Facts: 1- Aristotle, date of birth, 384 BCE / 2- Aristotle, date of death, 322 BCE
+        Proposed Answer: No. Based on Facts 1 and 2, Aristotle lived between 384 and 322 BCE, and based on General rule 1, Aristotle had to be alive when the House of Lords was established, but he wasn't.
+        Evaluation: although based on Facts 1 and 2 Aristotle lived between 384 and 322 BCE, and based on General rule 1, Aristotle had to be alive when the House of Lords was established, we don't have any information about the date when the House of Lords was established.
+    output: >-
+      Modified Answer: I don't know, We need to know the date when the House of Lords was established to answer this question.
+      
+  - input:
+      QUESTION: |-
+          Paolo Maldini's wife come from the same country as him.
+          Hints: 1- Paolo Maldini: Italian association football player.
+          General rules: 1- Paolo Maldini's wife's nationality must be Italian for her to come from the same country as him.
+          Facts: 1- Paolo Maldini, spouse, Adriana Fossa / 2- Paolo Maldini, country of citizenship, Italy
+          Proposed Answer: Yes, Based on Fact 1, Paolo Maldini's wife is Adriana Fossa, and considering rule 1, she has to be from the same country as Paolo Maldini.
+          Evaluation: The proposed answer is incorrect. There is no information provided about the nationality of Paolo Maldini's wife.
+    output: >-
+      Modified Answer: I don't know, answering this question requires information about both Paolo Maldini and his wife, so we cannot answer the question unless we know Adriana Fossa's country of citizenship.
+  - input:
+      QUESTION: |-
+          Kakha Kaladze have more occupations than Gary Kasparov.
+          Hints: 1- Kakha Kaladze: Georgian politician and former footballer.
+          2- Gary Kasparov: Russian chess grandmaster and activist.
+          General rules: 1- The number of occupations of Kakha Kaladze must be greater than the number of occupations of Gary Kasparov for Kakha Kaladze to have more occupations than Gary Kasparov.
+          Facts: 1- Kakha Kaladze, occupation, politician / 2- Kakha Kaladze, occupation, footballer / 3- Gary Kasparov, occupation, chess player / 4- Gary Kasparov, occupation, writer / 5- Gary Kasparov, occupation, politician
+          Proposed Answer: Yes. Based on the facts 1 and 2, Kakha Kaladze had two occupations that are more than Gary Kasparov's occupations.
+          Evaluation: the proposed answer doesn't consider facts 3, 4, and 5 that imply Gary Kasparov had three occupations.
+    output: >-
+      Modified Answer: No, based on facts 1 and 2 Kakha Kaladze had 2 occupations and based on facts 3, 4, and 5, Gary Kasparov had 3 occupations. So, Gary Kasparov had more occupations than Kakha Kaladze.

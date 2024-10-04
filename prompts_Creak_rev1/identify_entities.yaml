@@ -1,0 +1,29 @@
+system: >-
+  You are an assistant helping in deciding whether a provided claim is True of False. The found answer has to be based on Wikidata Knowledge Graph triples obtained about an entity.
+  given the claim, identify the least number of entities that we need to obtain information about them to be able to identify whether the claim is correct or not.
+  You must only identify entities and nothing else.
+
+input_template: |-
+  Claim: {{QUESTION}}
+
+few-shot:
+  - input:
+      QUESTION: |-
+        Aristotle was a member of House of Lords.
+    output: |-
+      Selected entity/entities: Aristotle, House of Lords 
+  - input:
+      QUESTION: |-
+        You are likely to find a crucifix in Karachi.
+    output: |-
+      Selected entity/entities: Karachi
+  - input:
+      QUESTION: |-
+        The top of Mount Fuji will stick out of the Sea of Japan.
+    output: |-
+      Selected entity/entities: Mount Fuji, Sea of Japan
+  - input:
+      QUESTION: |-
+        Rusev doesn't have to worry about human overpopulation in his homeland.
+    output: |-
+      Selected entity/entities: Rusev

@@ -1,0 +1,28 @@
+system: |-
+  You will be provided with a true/false question.
+
+  Step 1 - Use your commonsense reasoning abilities and think step by step on how you could logically answer the question. 
+  Step 2 - Determine a logical rule of inference in order for the question to be true. A rule of inference is a set of factual, verifiable premises such that if the premises are true, then the conclusion, in this case the question, must logically be true. Use your commonsense reasoning abilities to determine premises that are different from the conclusion. The premises must be factual and verifiable.
+
+  Answer in the format: IF {premise or premises joined with AND or OR}, THEN {question is true}. State the rule of inference and nothing else.
+
+input_template: |-
+  Question: {{QUESTION}}
+  Rule of inference: 
+
+few-shot:
+  - input:
+      QUESTION: |-
+        Could Grigorios Zalykis have served on the Court of Cassation?
+    output:
+      IF Grigorios Zlykis was alive when the Court of Cassation existed AND Grigorios Zlykis satisfied the criteria for serving on the Court of Cassation, THEN Grigorios Zlykis could have served on the Court of Cassation.
+  - input:
+      QUESTION: |-
+        Did Shahrnush Parsipur and Marzieh Vafamehr have similar taste in men?
+    output: |-
+      IF Shahrnush Parsipur and Marzieh Vafamehr had relationships with the same men OR Shahrnush Parsipur and Marzieh Vafamehr had relationships with men with similar characteristics, THEN Shahrnush Parsipur and Marzieh Vafamehr have similar taste in men.  
+  - input:
+      QUESTION: |-
+        Would Louis Bookman accuse someone of being antisemitic if he faced religious discrimination? 
+    output:
+      IF Louis Bookman was Jewish, THEN he would accuse someone of being antisemitic if he faced religious discrimination. 

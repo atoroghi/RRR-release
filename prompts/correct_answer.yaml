@@ -1,0 +1,70 @@
+system: >-
+  Task: Considering the provided question, the set of general rules and facts, an answer has been proposed. This answer has been evaluated. Considering this
+  evaluation, propose a modified answer. Begin your answer with "Yes", "No", or "I don't know". If the provided rules and facts are not sufficient to answer the question, begin your response with "I don't know".
+
+input_template: |-
+  Question: {{QUESTION}}
+  {% if HINTS %}
+  Hints: {{ HINTS|join('\n') }}
+  {% endif %}
+  {% if GENERAL_RULE %}
+  General Rule: {{GENERAL_RULE}}
+  {% endif %}
+  {% if FACTS %}
+  Facts: {{ FACTS|join(' \n ') }}
+  {% endif %}
+  {% if PROPOSED_ANSWER %}
+  Proposed Answer: {{ PROPOSED_ANSWER }}
+  {% endif %}
+  {% if EVALUATION %}
+  Evaluation: {{ EVALUATION }}
+  {% endif %}
+
+few-shot:
+  - input:
+      QUESTION: |-
+          Could Georgios Koutsias have worked in the Hellenic Petroleum?
+          General rules: 1- IF Georgios Koutsias was alive during the time the Hellenic Petroleum existed, THEN Georgios Koutsias could have worked in the Hellenic Petroleum.
+          Facts: 1- Georgios Koutsias, is, Greek sportsman
+          2- Georgios Koutsias, instance of, human
+          3- Georgios Koutsias, occupation, association football player
+          4- Georgios Koutsias, country of citizenship, Greece
+          5- Georgios Koutsias, date of birth, 8 February 2004
+          6- Hellenic Petroleum, instance of, business
+          7- Hellenic Petroleum, business, Petroleum industry
+          8- Hellenic Petroleum, country, Greece
+          Proposed Answer: No. Based on Fact 5, Georgios Koutsias was born in 2004, and based on General rule 1, Georgios Koutsias had to be alive when the Hellenic Petroleum was established, but he wasn't.
+          In answering this question, I made the assumption that Hellenic petroleum was established before 2004.Evaluation: although based on Facts 1 and 2 Aristotle lived between 384 and 322 BCE, and based on General rule 1, Aristotle had to be alive when the House of Lords was established, we don't have any information about the date when the House of Lords was established.
+          Evaluation: Although based on general rules Georgios Koutsias had to be alive when Hellenic Petroleum existed and Fact 5 tells us that he is alive since 2004, we don't have any information about the date when the Hellenic petroleum was established.
+          We can't make rational assumptions about the time a company was established without having additional information.
+    output: >-
+      Modified Answer: I don't know, We need to know the time duration when the Hellenic Petroleum existed to answer this question.
+      
+  - input:
+      QUESTION: |-
+          Did Paolo Maldini's wife come from the same country as him?
+          General rules: 1- IF the birth place of Paolo Maldini and Paolo Maldini's wife are located in the same country, THEN Paolo Maldini's wife came from the same country as him.
+          Facts: 1- Paolo Maldini, spouse, Adriana Fossa
+          2- Paolo Maldini, place of birth, Milan
+          3- Paolo Maldini, country of citizenship, Italy
+          4- Paolo Maldini, occupation, association football player
+          5- Paolo Maldini, date of birth, 26 June 1968
+          Proposed Answer: Yes, Based on the General rule 1, if the birth places of Paolo Maldini and his wife are in the same country, the answer is yes. Based on Fact 1, Paolo Maldini's wife is Adriana Fossa, and based on Fact 3, Paolo Maldini is from Italy.
+          Since couples are often from the same country, we can assume Adriana Fossa was also born in Italy.
+          In answering this question, I assumed that Adriana Fossa's birth place is located in Italy.
+          Evaluation: The proposed answer is incorrect. There is no information provided about the nationality of Paolo Maldini's wife and making assumptions about people's birth places without additional information is not plausible.
+    output: >-
+      Modified Answer: I don't know, answering this question requires information about both Paolo Maldini and his wife, so we cannot answer the question unless we know Adriana Fossa's birth place.
+  - input:
+      QUESTION: |-
+          Did Kakha Kaladze have more occupations than Gary Kasparov?
+          General rules: 1- IF the number of occupations of Kakha Kaladze is greater than the number of occupations of Gary Kasparov THEN Kakha Kaladze had more occupations than Gary Kasparov.
+          Facts: 1- Kakha Kaladze, occupation, politician
+          2- Kakha Kaladze, occupation, footballer
+          3- Gary Kasparov, occupation, chess player
+          4- Gary Kasparov, occupation, writer
+          5- Gary Kasparov, occupation, politician
+          Proposed Answer: Yes. Based on the facts 1 and 2, Kakha Kaladze had two occupations that are more than Gary Kasparov's occupations.
+          Evaluation: The proposed answer doesn't consider facts 3, 4, and 5 that imply Gary Kasparov had three occupations.
+    output: >-
+      Modified Answer: No, based on facts 1 and 2 Kakha Kaladze had 2 occupations and based on facts 3, 4, and 5, Gary Kasparov had 3 occupations. So, Gary Kasparov had more occupations than Kakha Kaladze.

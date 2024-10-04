@@ -1,0 +1,83 @@
+system: |-
+  Task: You are a helpful assistant trying to give us guidance that will help to determine whether a sentence is correct or incorrect. A set of knowledge graph triples called "facts" are given that may provide some contextual information about the sentence. However, if you don't find them useful, just ignore them and don't say anything about them. We may later look for additional facts that will help more. 
+  Your mission is to think about how the correctness of sentence could be identified using general knowledge that most people have plus facts like the ones provided, and then concisely state the most important general rule that would help someone to identify whether the sentence is correct or incorrect. But, you must not directly give your answer and you must not judge whether the correctness of sentence is identifiable or not. Focus on what general information can help in determining whether the sentece is correct or incorrect.
+  Your response must follow the following format: "<an explanation> Therefore, a helpful rule is:\n Rule: <An entity or Something relevant to it> must <have some property> to <property stated in the sentence>."
+  Try your best to use your general knowledge. Be smart. Don't ask or state conditions on obvious information that most average humans would know. You are in charge of helping with such knowledge so try to provide it in your rules rather than asking for it. If you can't produce a helpful rule or you think the correctness of sentence is not identifiable, just try to make understanding the sentence easier by giving a hint or defining terms used in the sentence and don't say anything else.
+  Your rule must be different from the rules identified as "Previously-chosen General rules", so try to pick other rules targetting different entities present in the question. First explain why you suppose this rule is important and then in the next line, write the rule. Remember that you have to provide a general rule and cannot leave the question unanswered.
+
+input_template: |-
+  Sentence: {{QUESTION}}
+  {% if AXIOMS %}
+  Previously-chosen General rules: {{AXIOMS|join('\n')}}
+  {% endif %}
+  {% if ENTITIES %}
+  Entities: {{ENTITIES|join('\n')}}
+  {% endif %}
+  {% if FACTS %}
+  FACTS: {{FACTS|join('\n')}}
+  {% endif %}
+
+
+few-shot:
+  - input:
+      QUESTION: |-
+        Georgios Koutsias's father served in the House of Lords.
+        Previously-chosen General rules: Georgios Koutsias's father must have been alive during the time the House of Lords existed to be able to serve in it.
+        Entities: Georgios Koutsias, House of Lords
+        Facts: 1- Georgios Koutsias, is, Greek politician (born 1950)
+        2- Georgios Koutsias, instance of, human
+        3- Georgios Koutsias, father, Nikolas Koutsias
+        4- Georgios Koutsias, country of citizenship, Greece
+        5- Georgios Koutsias, father, Nikolas Koutsias
+        6- House of Lords, instance of, upper house
+        7- House of Lords, part of, Parliament of the United Kingdom
+
+    output: |-
+      The sentence claims that Georgios Koutsias's father (Nikolas Koutsias) served in the House of Lords. Previous general rule focused on the time that Georgios Koutsias's father lived. Other than that, typically, members of House of Lords have to be citizens of United Kingdom too. Therefore, a helpful rule is:\n
+      Rule: Georgios Koutsias's father (Nikolas Koutsias) must have been a citizen of United Kingdom to have served in the House of Lords.
+  - input:
+      QUESTION: |-
+        Christian Zaccardo bought a car from Bahman group.
+        Previously-chosen General rules: Christian Zaccardo had to be alive when Bahman group was producing cars.
+        Entities: Christian Zaccardo, Bahman group
+        Facts: 1- Christian Zaccardo, instance of, human
+        2- Christian Zaccardo, sex or gender, male
+        3- Christian Zaccardo, country of citizenship, italy
+        4- Christian Zaccardo, date of birth, 21 December 1981
+        5- Bahman group, instance of, business
+        6- Bahman group, industry, automotive
+        7- Bahman group, partner with, Mazda
+        8- Bahman group, located in, Tehran
+        9- Bahman group, target market, Iran
+    output: |-
+        The sentence claims that Christian Zaccardo bought a car from Bahman group. Previous general rule focused on the time that Christian Zaccardo lived. Other than that, typically, people buy cars from companies that sell cars in the country they live in. Therefore, a helpful rule is:\n
+        Rule: Bahman group must have sold products in Italy or Christian Zaccardo must have lived in Iran to make him able to buy a car from Bahman group.  
+  - input:
+      QUESTION: |-
+        Mehran Khaghani's wife could talk on the phone.
+        Previously-chosen General rules: Mehran Khaghani's wife must not be nonverbal to be able to talk on the phone.
+        Entities: Mehran Khaghani
+        Facts: 1- Mehran Khaghani, sex or gender, male
+        2- Mehran Khaghani, country of citizenship, United States of America
+        3- Mehran Khaghani, place of birth, London
+        4- Mehran Khaghani, educated at, Lexington High School
+        5- Mehran Khaghani, occupation, comedian
+    output: |-
+        The sentence claims that Mehran Khaghani's wife could talk on the phone. Previous general rule focused on the ability of Mehran Khaghani's wife to talk. Other than that, typically, people talk on the phone if they live when telephone is in existence. Therefore, a helpful rule is:\n
+        Rule: Mehran Khaghani must have lived after the invention of telephone to be able to talk on the phone.  
+
+  - input:
+      QUESTION: |-
+        Rajesh Rajamani would avoid a dish with ham.
+        Previously-chosen General rules: Rajesh Rajamani must be a vegetarian to avoid a dish with meat.
+        Entities: Rajesh Rajamani
+        Facts: 1- Rajesh Rajamani, instance of, human
+        2- Rajesh Rajamani, country of citizenship, India
+        3- Rajesh Rajamani, occupation, engineer
+        4- Rajesh Rajamani, religion or worldview, Islam
+
+    output: |-
+        The sentence claims that Rajesh Rajamani would avoid a dish with meat. Previous general rule focused on the diet of Rajesh Rajamani. Other than that, typically, people avoid dishes with ham if they practice a religion that forbids eating ham. Therefore, a helpful rule is:\n
+        Rule: Rajesh Rajamani must be a Muslim or a Jew to avoid a dish with ham.
+  
+

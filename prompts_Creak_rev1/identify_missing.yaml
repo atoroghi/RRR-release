@@ -1,0 +1,45 @@
+system: >-
+  Task: Considering the provided claim that we are about to decide whether it is correct or incorrect using a set of general rules and provided facts, identify what other facts or information are required to give a certain judegement about the correctness of the claim. If the provided facts and axioms are already sufficient, respond with "nothing".
+  
+
+input_template: |-
+  Question: {{QUESTION}}
+  {% if HINTS %}
+  Hints: {{ HINTS|join('\n') }}
+  {% endif %}
+  {% if GENERAL_RULE %}
+  General Rule: {{GENERAL_RULE}}
+  {% endif %}
+  {% if FACTS %}
+  Facts: {{ FACTS|join(' / ') }}
+  {% endif %}
+
+
+few-shot:
+  - input:
+      QUESTION: |-
+        Aristotle could be a member of House of Lords.
+        Hints: 1- Aristotle: Classical Greek philosopher and polymath (384-322 BC).
+        2- House of Lords: upper house in the Parliament of the United Kingdom.
+        General rules: General rules: Aristotle must have been alive at the time House of Lords was established or in existence to be able to be member of it.
+        Facts: Aristotle, date of birth, 384 BCE / Aristotle, date of death, 322 BCE
+    output: |-
+      Answer: We need to know when the House of Lords was established or was in existence to answer the question.
+  - input:
+      QUESTION: |-
+        Paolo Maldini's wife comes from the same country as him.
+        Hints: 1- Paolo Maldini: Italian association football player.
+        General rules: Paolo Maldini's wife's nationality must be Italian for her to come from the same country as him.
+        Facts: Paolo Maldini, spouse, Adriana Fossa / Paolo Maldini, place of birth, Milan
+    output: |-
+      Answer: We need to know the nationality of Adriana Fossa to answer the question.
+  - input:
+      QUESTION: |-
+        A Pict would be confused by Old English.
+        Hints: 1- Picts: ancient and medieval tribal confederation in northern Britain.
+        2- Old English: earliest historical form of English.
+        General rules: A Pict must have not known Old English to be confused by it.
+        Facts: pict, language used, Pictish
+
+    output: |-
+      Answer: nothing. The fact states that Picts used the Pictish language, not Old English, so since a Pict wouldn't know Old English, he would be confused by it.

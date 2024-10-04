@@ -1,0 +1,58 @@
+system: |-
+  You will be provided with a true/false question that are about one or a number of entities. A set of facts will also be provided to give you the relevant information about the entities.
+
+  Step 1 - Use your commonsense reasoning abilities and think step by step on how you could logically answer the question. 
+  Step 2 - Determine a logical rule of inference in order for the question to be true. A rule of inference is a set of factual, verifiable premises such that if the premises are true, then the conclusion, in this case the question, must logically be true. Use your commonsense reasoning abilities to determine premises that are different from the conclusion. The premises must be factual and verifiable.
+  The rule of inference that you provide must be different from the rules identified as "Previously-chosen Rules of Inference".
+
+  Answer in the format: IF {premise or premises joined with AND or OR}, THEN {question is true}. State a rule of inference and nothing else.
+
+input_template: |-
+  Question: {{QUESTION}}
+  {% if AXIOMS %}
+  Previously-chosen Rules of Inference: {{AXIOMS|join('\n')}}
+  {% endif %}
+  {% if FACTS %}
+  Facts: {{FACTS|join('\n')}}
+  {% endif %}
+  Rule of inference:
+
+few-shot:
+  - input:
+      QUESTION: |-
+        Could Georgios Koutsias have served on the House of Lords?
+        Previously-chosen Rules of Inference: IF Georgios Koutsias was alive during the time the House of Lords existed AND Georgios Koutsias satisfied the criteria for serving on the House of Lords, THEN Georgios Koutsias could have served on the House of Lords.
+        Facts: 1- Georgios Koutsias, is, Greek sportsman
+        2- Georgios Koutsias, instance of, human
+        3- Georgios Koutsias, occupation, association football player
+        4- Georgios Koutsias, country of citizenship, Greece
+        5- House of Lords, instance of, upper house
+        6- House of Lords, part of, Parliament of the United Kingdom
+
+    output:
+      IF Georgios Koutsias was from the United Kingdom AND Georgios Koutsias was selected by the United Kingdom monarchs, THEN he could have served on the House of Lords.
+  - input:
+      QUESTION: |-
+        Could Christian Zaccardo have bought a car from Bahman group?
+        Previously-chosen Rules of Inference: IF Christian Zaccardo was alive when Bahman group was producing cars AND Christian Zaccardo could afford a car, THEN he could have bought a car from Bahman group.
+        Facts: 1- Christian Zaccardo, instance of, human
+        2- Christian Zaccardo, sex or gender, male
+        3- Christian Zaccardo, country of citizenship, italy
+        4- Christian Zaccardo, date of birth, 21 December 1981
+        5- Bahman group, instance of, business
+        6- Bahman group, industry, automotive
+        7- Bahman group, partner with, Mazda
+        8- Bahman group, located in, Tehran
+    output: |-
+      IF Christian Zaccardo was living in Iran AND Christian Zaccardo could afford a car, THEN he could have bought a car from Bahman group.
+  - input:
+      QUESTION: |-
+        Would Mehran Khaghani talk on the phone? 
+        Previously-chosen Rules of Inference: IF Mehran Khaghani was not nonverbal, THEN he would talk on the phone.
+        Facts: 1- Mehran Khaghani, sex or gender, male
+        2- Mehran Khaghani, country of citizenship, United States of America
+        3- Mehran Khaghani, place of birth, London
+        4- Mehran Khaghani, educated at, Lexington High School
+        5- Mehran Khaghani, occupation, comedian
+    output:
+      IF Mehran Khaghani lived after the invention of telephone, THEN he would be able to talk on the phone.  

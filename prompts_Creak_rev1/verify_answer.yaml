@@ -1,0 +1,78 @@
+system: >-
+  Task: Considering the provided claim, the set of general rules and facts, an answer has been proposed about whether the claim is correct or not. Do you consider this answer to be correct and grounded 
+  on the general rules and facts, and based on plausible assumptions? If yes, respond with "Yes". If not, state the reason why the answer is incorrect and/or not grounded on the general rules and facts.
+
+input_template: |-
+  Claim: {{QUESTION}}
+  {% if HINTS %}
+  Hints: {{ HINTS|join('\n') }}
+  {% endif %}
+  {% if GENERAL_RULE %}
+  General Rule: {{GENERAL_RULE}}
+  {% endif %}
+  {% if FACTS %}
+  Facts: {{ FACTS|join(' / ') }}
+  {% endif %}
+  {% if PROPOSED_ANSWER %}
+  Proposed Answer: {{ PROPOSED_ANSWER }}
+  {% endif %}
+
+few-shot:
+  - input:
+      QUESTION: |-
+          Aristotle could be a member of House of Lords.
+          General rules: 1- Aristotle must have been alive at the time House of Lords was established or in existence to be able to be member of it.
+          Facts: 1- Aristotle, date of birth, 384 BCE
+          2- Aristotle, date of death, 322 BCE
+          3- House of Lords, is, upper house in the Parliament of the United Kingdom.
+          Proposed Answer: No. Based on Facts 1 and 2, Aristotle lived between 384 and 322 BCE, and based on General rule 1, Aristotle had to be alive when the House of Lords was established, but he wasn't.
+    output: >-
+      Evaluation: No, although based on Facts 1 and 2 Aristotle lived between 384 and 322 BCE, and based on General rule 1, Aristotle had to be alive when
+      the House of Lords was established, we don't have any information about the date when the House of Lords was established.
+  - input:
+      QUESTION: |-
+          It is likely for Tom Avni to celebrate hanukkah.
+          General rules: Tom Avni must be interested in religous events for him to be likely to celebrate hanukkah.
+          Facts: 1- Tom Avni, is, Israeli actor and television host
+          2- Tom Avni, sex or gender, male
+          3- Tom Avni, date of birth, 20 April 1986
+          4- Tom Avni, place of birth, Eilat
+          5- Tom Avni, religion or worldview, Judaism
+          6- Tom Avni, work period (start), 1990
+          Proposed Answer: Yes, although the facts do not provide us with explicit information about Tom Avni's interest in religous ceremonies, Fact 5 tells us that Tom Avni is Jewish.
+          Although we don't know for sure if Tom Avni celebrates the important Jewish ceremonies, since it is likely for most Jews to celebrate Jewish ceremonies, it is plausible to say that Tom Avni is likely to
+          celebrate hanukkah as many Jews do so.
+          In answering this question, I assumed that Tom Avni celebrates the important Jewish ceremonies.
+    output: >-
+      Evaluation: Yes, the proposed answer is correct and grounded on the general rules and facts. Although it's also based on a number of assumptions, assuming a Jewish person will celebrate Hannukah is a plausible assumption, so we can accept the answer.
+  - input:
+      QUESTION: |-
+          Abraham Lincoln's death could have been prevented by using Narcan.
+          General rules: 1- Narcan can prevent deaths caused by opioid overdose.
+          Facts: 1- Abraham Lincoln, cause of death, shot to the head
+          2- Narcan, is, Opioid receptor antagonist
+          Proposed Answer: No. Based on the Fact 1, Abraham Lincoln was killed by being shot to the head, but based on General rule 1, Narcan can prevent deaths caused by opioid overdose.
+          Since Abraham Lincoln wasn't experiencing opioid overdose, Narcan couldn't have prevented his death.
+    output: >-
+      Evaluation: Yes, the proposed answer is correct and grounded on the general rules and facts.
+
+  - input:
+      QUESTION: |-
+          Ash Reshteh is a part of Gelareh Abbasi's diet.
+          General rules: Gelareh Abbasi has to like Iranian cuisine and not to have dietary restrictions that prevent her from eating Ash Reshteh.
+          Facts: 1- Gelareh Abbasi, instance of, human
+          2- Gelareh Abbasi, date of birth, 20 July 1983
+          3- Gelareh Abbasi, place of birth, Tehran
+          4- Gelareh Abbasi, country of citizenship, Iran
+          5- Ash Reshteh, is, type of Aush
+          6- Ash Reshteh, subclass of, soup
+          7- Ash Reshteh, part of, Iranian cuisine
+          8- Ash Reshteh, part of, Azerbaijani cuisine
+          Proposed Answer: Yes, based on General rule 1, if Gelareh Abbasi is interested in Iranian cuisine and she doesn't have dietary restrictions, it is likely for her to eat Ash Reshteh.
+          Based on Fact 4, Gelareh Abbasi is Iranian and based on Fact 7, Ash Reshteh is part of Iranian cuisine. Although the facts don't provide explicit information about Gelareh 
+          Abbasi's interest in Ash Reshteh, it is plausible to assume that since most Iranians like Iranian cuisine and Gelareh Abbasi is an Iranian citizen, and we don't have any information
+          about her food restrictions, Ash Reshteh is likely to be part of her diet. Note that the question asks about the likeliness of Ash Reshteh being part of her cuisine.
+          In answering this question, I assumed that most Iranians like Iranian cuisine and Gelareh Abbasi has no dietary restrictions.
+    output: >-
+      Evaluation: Yes, although the answer is based on the assumptions, its assumptions are plausible. It is plausible to assume that Iranians such as Gelareh Abbasi are likely to enjoy Iranian cuisine,
+      and since we don't have any information available about Gelareh Abbasi's dietary restrictions, it is plausible to assume she doesn't have any.

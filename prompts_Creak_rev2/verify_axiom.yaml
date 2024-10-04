@@ -1,0 +1,41 @@
+system: >-
+  Task: Given a question and a set of facts, a system was asked to state a general rule that would help someone to find the answer. You are a helpful assistant trying to identify whether these general rules are acceptable or should be corrected. An acceptable rule has to follow these criteria:
+  1- It must not directly answer the question.
+  2- It must not judge whether the question is answerable and must not mention that provided facts are insufficient.
+  First, explain your reason. Then, if the rule is acceptable, just copy the original rule. Otherwise, propose an acceptable general rule that can be helpful in answering the question.
+
+input_template: |-
+  Question: {{QUESTION}}
+  {% if GENERAL_RULE %}
+  Proposed General Rule: {{GENERAL_RULE}}
+  {% endif %}
+  
+
+few-shot:
+  - input:
+      QUESTION: |-
+          Could Georgios Koutsias's father have served in the House of Lords?
+          Proposed General Rule: Georgios Koutsias's father must have been be alive during the time the House of Lords existed and be a citizen of the United Kingdom.
+    output: |-
+      The general rule does not directly answer the question and does not judge whether the question is answerable or not or complain about the insufficiency of provided facts. Therefore, I will just copy the original general rule which is: Georgios Koutsias's father must have been be alive during the time the House of Lords existed and be a citizen of the United Kingdom.
+  - input:
+      QUESTION: |-
+          Did Fakhri Nikzad and Gelareh Abbasi have similar taste in men?
+          Proposed General Rule: The question asks us to determine whether Fakhri Nikzad and Gelareh Abbasi have similar taste in men. Typically, if two women like the same men or men with similar characteristics, we can conclude their tastes are similar. However, the given facts do not provide any information about Fakhri Nikzad and Gelareh Abbasi's interests in men.
+          
+    output: |-
+      The proposed general rule is complaining about the insufficiency of provided information because it says "the given facts do not provide any information" and is thus, unacceptable. In order to identify whether two people share similar tastes in men or not, we should pay attention to the partners they have chosen. Therefore, the modified general rule is: Fakhri Nikzad and Gelareh Abbasi must have been in relationship with same men or men with similar characteristics to prove that they have similar tastes in men.
+  - input:
+      QUESTION: |-
+          Was Mehran Khaghani's spouse Jewish?
+          Proposed General Rule: Mehran Khaghani's spouse must have been Jewish to accuse someone of being antisemitic if she faced religious discrimination.
+    output: >-
+      The general rule does not directly answer the question and does not judge whether the question is answerable or not or complain about the insufficiency of provided facts. Therefore, I will just copy the original general rule which is: Mehran Khaghani's spouse must have been Jewish to accuse someone of being antisemitic if she faced religious discrimination.
+
+  - input:
+      QUESTION: |-
+          Is Paolo Maldini a veteran?
+          Proposed General Rule: The question asks us to determine whether Paolo Maldini is a veteran. However, the provided facts do not provide any information about his military service. Therefore, the he didn't serve in the military.
+    output: >-
+      The general rule directly answers the question because it says "he didn't serve in military" and also complains about the insufficiency of provided facts because it says "the given facts do not provide any information about his military service" and is thus, unacceptable. Therefore, I will propose an acceptable general rule that can be helpful in answering the question. The modified general rule is: Paolo Maldini must have served in the military to be a veteran.
+    

@@ -1,0 +1,82 @@
+
+Initial_Answer:
+  - system: >-
+      Is the provided statement correct? Begin your answer with either "Yes" or "No" and then concisely explaining your reason.
+      If you are not able to answer it, just respond with "I don't know".
+  - input1: >-
+      statement: {QUESTION}
+
+
+
+Claim_Extraction:
+  - system: >-
+      Extract and enumerate factual claims that are used in the provided sentences. 
+  - input1: >-
+      Sentence: Frédéric Chopin's father is Nicolas Chopin, he was born on June 17, 1771.
+  - output1: >-
+      Claims: 1- Frédéric Chopin's father is Nicolas Chopin. / 2- he was born on June 17, 1771.
+  - input2: >-
+      Sentence: Aristotle was born in 384 BC, the House of Lords was established in 1341, so he could not be a member of House of Lords.
+  - output2: >-
+      Claims: 1- Aristotle was born in 384 BC. / 2- the House of Lords was established in 1341.
+  - input3: >-
+      Sentence: {SENTENCE}
+    
+
+Entity_Extraction:
+  - system: >-
+      Extract and enumerate entities that are used in the provided sentences. 
+  - input1: >-
+      Sentence: Frédéric Chopin's father is Nicolas Chopin.
+  - output1: >-
+      Entities: 1- Frédéric Chopin / 2- Nicolas Chopin
+  - input2: >-
+      Sentence: Aristotle was born in 384 BC.
+  - output2: >-
+      Entities: 1- Aristotle
+  - input3: >-
+      Sentence: {SENTENCE}
+
+
+Fact_Selection:
+  - system: >-
+      From the set of provided KG triples, select the ones that are most useful in verifying the claim. If you picked multiple facts, separate them
+      with a new line.
+  - input1: |-
+      Claim: Frédéric Chopin's father is Nicolas Chopin.
+      Facts:
+      (Frédéric Chopin, father, Nicolas Chopin), (Frédéric Chopin, instance of, human), (Frédéric Chopin, sex or gender, male)
+
+  - output1: |-
+      (Frédéric Chopin, father, Nicolas Chopin)
+  
+  - input2: |-
+      Claim: Aristotle was born in 384 BC.
+      Facts:
+      (Aristotle, place of birth, Stageira), (Aristotle, date of birth, 384 BC), (Aristotle, cause of death, disease)
+            
+  - output2: |-
+      (Aristotle, date of birth, 384 BC)
+
+  - input3: |-
+      Claim: {CLAIM}
+      Facts:
+      {FACTS}
+
+Claim_Verification:
+  - system: >-
+      Considering the provided claim and the set of facts, determine whether the claim is consistent with the facts or not.
+      If the claim is consistent with the facts, just copy the claim.
+      If the claim is inconsistent, propose an adjusted claim based on the facts and write the adjusted claim.
+
+  - input: |-
+      Claim: {CLAIM}
+      Facts:
+      {FACTS}
+
+Final_Answer:
+  - system: >-
+      Is the provided statement correct? Consider the provided claims and additional explanations and begin your answer with either with "Yes" "No" or "I don't know" .
+  - input: |-
+      statement: {QUESTION}
+      claims: {CLAIMS}

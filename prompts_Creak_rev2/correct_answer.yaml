@@ -1,0 +1,60 @@
+system: >-
+  Task: An assitant was asked to determine whether a sentence is correct or incorrect. A number of knowledge graph triples (called facts) and a general rule were also provided to provide more information. The assistant was also asked to use the general knowledge that most smart humans have and avoid asking for obvious information. Using these, the assistant has given an answer. An evaluator has evaluated the answer and found some errors. You are a smart assistant trying to correct the errors. You must correct the errors found by the evaluator and give a new answer. You must also provide a brief justification for your answer. Your justification must follow this template:
+  <your reason> Therefore, the modified answer is: <your final answer(beginning with "Yes", "No", or "I don't know")>
+  Use "Yes" in the beginning of your modified answer if the original sentence was correct. Use "No" if the original sentence was incorrect. Use "I don't know" if the assistant couldn't determine the correctness of the sentence.
+
+input_template: |-
+  Sentence: {{QUESTION}}
+  {% if HINTS %}
+  Hints: {{ HINTS|join('\n') }}
+  {% endif %}
+  {% if GENERAL_RULE %}
+  General Rule: {{GENERAL_RULE}}
+  {% endif %}
+  {% if FACTS %}
+  Facts: {{ FACTS|join(' / ') }}
+  {% endif %}
+  {% if PROPOSED_ANSWER %}
+  Proposed Answer: {{ PROPOSED_ANSWER }}
+  {% endif %}
+  {% if EVALUATION %}
+  Evaluation: {{ EVALUATION }}
+  {% endif %}
+
+few-shot:
+  - input:
+      QUESTION: |-
+        Hirkani forests cease to exist now.
+        General rules: 1- Forests cease to exist when they are destroyed or cut down.
+        Facts: 1- Hirkani forests, instance of, forest
+        2- Hirkani Forests, country, Iran
+        3- Hirkani forests, type of tree, oak
+        4- Hirkani forests, type of tree, walnut
+        5- Hirkani forests, type of tree, maple
+        Proposed Answer: Based on General rule 1, forests cease to exist when they are destroyed or cut down. Fact 1 tells us that Hirkani forests are a forest and other facts tell us that there are multiple precious trees in these forests. Although we don't have explicit information about Hirkani forests being cut down, it's plausible to assume that people have cut them down to use their woods. Therefore, the answer is: Yes, Hirkani forests cease to exist now.
+        Evaluation: Although the general rule states that forests may cease to exist by reasons such as being destroyed or cut down, we have no evidence of this happening to Hirkani forests. The assumptions made by the assistant are not plausible. Therefore, my evaluation of the answer is: No, the proposed answer is not correct and grounded on the general rules and facts.
+    output: >-
+      We have no evidence about Hirkani forests to be entirely cut or destroyed. So, it is plausible to assume that these forests are still in existence. Therefore, the modified answer is: No, Hirkani forests do not cease to exist now.
+      
+  - input:
+      QUESTION: |-
+          Taghi Arani would vote for anti-communist policies.
+          General rules: 1- The question is about Taghi Arani's voting behavior. We need to know his political views to answer the question.
+          Facts: 1- Taghi Arani, instance of, human
+          2- Taghi Arani, date of birth, 1921/01/01
+          3- Taghi Arani, place of birth, Tehran
+          4- Taghi Arani, religion or worldview, anti-capitalism
+          5- Taghi Arani, country of citizenship, Iran
+          Proposed Answer: Based on the general rule, we must know about Taghi Arani's voting behavior to answer the question. Since we have no information about his voting behavior or political views, we cannot give a certain answer. Therefore, the answer is: I don't know.
+          Evaluation: The general rule asks for considering Taghi Arani's voting behavior and political views. Fact 4 tells us that Taghi Arani was anti-capitalism. Although there are no explicit information about his voting behavior, since capitalism and communism are opposing ideas, it is plasuible to assume that anti-capitalists are against anti-communism and thus, they will vote against anti-communism policies. Therefore, my evaluation of the answer is: No, the proposed answer is not correct because the assistant could have given the answer using plausible assumptions.
+    output: >-
+      The question asks us whether Taghi Arani would vote lfor anti-communist policies. Based on fact 4, Taghi Arani was an anti-capitalism. The evaluation tells us that communism and capitalism are opposing ideas. Since Taghi Arani was anti-capitalis, we infer that he supported communism. So, Taghi Arani, being a communist, would not support anti-communism ideas. Therefore, the modified answer is: No, Taghi Arani would not vote for anti-communist policies.
+  - input:
+      QUESTION: |-
+          Did Kakha Kaladze have more occupations than Gary Kasparov?
+          General rules: 1- The number of occupations of Kakha Kaladze must be greater than the number of occupations of Gary Kasparov for Kakha Kaladze to have more occupations than Gary Kasparov.
+          Facts: 1- Kakha Kaladze, occupation, politician / 2- Kakha Kaladze, occupation, footballer / 3- Gary Kasparov, occupation, chess player / 4- Gary Kasparov, occupation, writer / 5- Gary Kasparov, occupation, politician
+          Proposed Answer: Based on the facts 1 and 2, Kakha Kaladze had two occupations that are more than Gary Kasparov's occupations. Therefore, the answer is: Yes, Kakha Kaladze had more occupations than Gary Kasparov. In answering this question, I didn't make any assumptions.
+          Evaluation: the proposed answer doesn't consider facts 3, 4, and 5 that imply Gary Kasparov had three occupations. Therefore, my evaluation of the answer is: No, the proposed answer is not correct and grounded on the general rules and facts.
+    output: >-
+      Based on facts 1 and 2 Kakha Kaladze had 2 occupations and based on facts 3, 4, and 5, Gary Kasparov had 3 occupations. So, Gary Kasparov had more occupations than Kakha Kaladze. Therefore, the modified answer is: No, Kakha Kaladze did not have more occupations than Gary Kasparov. In answering this question, I didn't make any assumptions.

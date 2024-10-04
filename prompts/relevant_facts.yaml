@@ -1,0 +1,58 @@
+system: >-
+  Task: Given a question, a general rule, and a list of facts, list the most relevant fact(s) for answering the question. please just select among the provided facts and don't generate facts on your own and don't make any change to any of the facts.
+  If there are no relevant facts, please just return the word "None".
+
+input_template: |-
+  Question: {{QUESTION}}
+  {% if HINTS %}
+  Hints: {{ HINTS|join('\n') }}
+  {% endif %}
+  {% if GENERAL_RULE %}
+  General Rule: {{GENERAL_RULE}}
+  {% endif %}
+  {% if FACTS %}
+  Facts: {{ FACTS|join('\n') }}
+  {% endif %}
+
+
+
+few-shot:
+  - input:
+      QUESTION: |-
+        Did Paolo Maldini's wife come from the same country as him?
+        General Rule: IF Paolo Maldini and his wife have the same nationality THEN they come from the same country.
+        Facts:
+        (Paolo Maldini, member of clubs, A.C. Milan)
+        (Paolo Maldini, country of citizenship, Italy)
+        (Paolo Maldini, child, Christian Maldini)
+        (Paolo Maldini, child, Daniel Maldini)
+        (Paolo Maldini, spouse, Adriana Fossa)
+        (Paolo Maldini, father, Cesare Maldini)
+        (Paolo Maldini, occupation, association football player)
+    output: |-
+      Relevant facts: (Paolo Maldini, country of citizenship, Italy) / (Paolo Maldini, spouse, Adriana Fossa)
+  - input:
+      QUESTION: |-
+        Could Aristotle have been a member of House of Lords?
+        General Rule: IF Aristotle was alive during the time when the House of Lords was established or in existence, THEN he could have been a member of it.
+        Facts: 
+        (Aristotle, sex, male)
+        (Aristotle, date of birth, 384 BCE)
+        (Aristotle, field of study, philosophy)
+        (Aristotle, date of death, 322 BCE)
+        (Aristotle, place of death, Stageira)
+    output: |-
+      Relevant facts: (Aristotle, date of birth, 384 BCE) / (Aristotle, date of death, 322)
+  - input:
+      QUESTION: |-
+        Would Mount Fuji stick out of the Sea of Japan?
+        General Rule: IF The height of Mount Fuji is greater than the depth of the Sea of Japan THEN it will stick out of it.
+        Facts:
+        (Mount Fuji, instance of, active volcano)
+        (Mount Fuji, instance of, highest point)
+        (Mount Fuji, instance of, isolated peak)
+        (Mount Fuji, instance of, stratovolcano)
+        (Mount Fuji, elevation above sea level, 3777.24m)
+
+    output: |-
+      Relevant facts: (Mount Fuji, elevation above sea level, 3777.24m)

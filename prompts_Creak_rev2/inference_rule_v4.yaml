@@ -1,0 +1,88 @@
+system: |-
+  Task: You are a helpful assistant trying to give us guidance that will help to determine whether a sentence is correct or incorrect. A set of knowledge graph triples called "facts" are given that may provide some contextual information about the sentence. However, if you don't find them useful, just ignore them and don't say anything about them. We may later look for additional facts that will help more. 
+  Your mission is to think about how the correctness of sentence could be identified using general knowledge that most people have plus facts like the ones provided, and then concisely state the most important general rule that would help someone to identify whether the sentence is correct or incorrect. But, you must not directly give your answer and you must not judge whether the correctness of sentence is identifiable or not. Focus on what general information can help in determining whether the sentece is correct or incorrect.
+  Your response must follow the following format: "<an explanation> Therefore, a helpful rule is:\n Rule: <An entity or Something relevant to it> must <have some property> to <property stated in the sentence>."
+  Try your best to use your general knowledge. Be smart. Don't ask or state conditions on obvious information that most average humans would know. You are in charge of helping with such knowledge so try to provide it in your rules rather than asking for it. Remember your rules have to be accurate and correct. If a property or an event isn't stated in the facts, and a smart human couldn't infer it using plausible assumptions, you must assume that it doesn't exist or hasn't happened. For example, if there are no information about a person's death or an organization's bankrupcy, you must assume that the person is alive and the organization is active. Or, if no facts state a person has won Nobel prize, assume he hasn't. If you can't produce a helpful rule or you think the correctness of sentence is not identifiable, just try to make understanding the sentence easier by giving a hint or defining terms used in the sentence and don't say anything else.
+
+
+input_template: |-
+  Sentence: {{QUESTION}}
+  {% if ENTITIES %}
+  Entities: {{ENTITIES|join('\n')}}
+  {% endif %}
+  {% if FACTS %}
+  FACTS: {{FACTS|join('\n')}}
+  {% endif %}
+
+few-shot:
+  - input:
+      QUESTION: |-
+        Ali Asiaei was influenced by Hana Beizaei in his works.
+        Entities: Ali Asiaei
+        Hana Beizaei
+        Facts: 1- Ali Asiaei, is, Iranian director (1900-1950)
+        2- Ali Asiaei, instance of, human
+        3- Ali Asiaei, occupation, director
+        4- Ali Asiaei, country of citizenship, Iran
+        5- Hana Beizaei, date of birth, 1951/12/26
+        6- Hana Beizaei, father, Bahram Beizaie
+        7- Hana Beizaei, occupation, director
+
+
+    output: |-
+      The sentence claims that Ali Asiaei was influenced by Hana Beizaei in his works. A person can influence another person's works if they are both active in the same field, and the person who left the influence has done the work earlier. Fact 3 tells us that Ali Asiaei is a director. Fact 7 tells us that Hana Beizaei is also a director. However, the time they lived in is also important. Because in this case, Hana Beizaei was born after Ali Asiaei's death. Therefore, a helpful rule is:\n
+      Rule: Hana Beizaei must be born before Ali Asiaei's death to influence his works.
+      
+  - input:
+      QUESTION: |-
+        Davide Callà is very likely to sing in German.
+        Entities: Davide Callà
+        Facts: 1- Davide Callà, instance of, human
+        2- Davide Callà, sex or gender, male
+        3- Davide Callà, country of citizenship, Italy
+        6- Davide Callà, occupation, association football player
+        7- Davide Callà, date of birth, 1993/08/06
+    output: |-
+      The sentence claims that Davide Callà is very likely to sing in German. It will be likely for a person to sing in German if he is a singer and speaks German. Therefore, a helpful rule is:\n
+      Rule: Davide Callà must be a singer and speak German to be likely to sing in German.
+      
+  - input:
+      QUESTION: |-
+        Mehran Khaghani's spouse would accuse someone of being antisemitic if she faced religious discrimination.
+        Entities: Mehran Khaghani
+        antisemitism
+        Facts: 1- Mehran Khaghani, sex or gender, male
+        2- Mehran Khaghani, country of citizenship, United States of America
+        3- Mehran Khaghani, place of birth, London
+        4- Mehran Khaghani, educated at, Lexington High School
+        5- Mehran Khaghani, occupation, comedian
+    output: |-
+      The sentence claims that Mehran Khaghani's spouse (whose name isn't identified in the facts) would accuse someone of being antisemitic if she faced religous discrimination. We know that Jewish people can accuse someone of being antisemitic if they face religous discrimination. We will know if a person is Jewish if it is stated in the facts. Therefore, a helpful rule is:\n
+      Rule: Mehran Khaghani'spouse (whose name isn't identified in the facts) must be jewish to accuse someone of being antisemitic if he faced religious discrimination.
+
+  - input:
+      QUESTION: |-
+        Virginia Raggi is likely to contest in next presidential election in homeland of Farhad Zarif's wife.
+        Entities: Virginia Raggi
+        Farhad Zarif
+        Facts: 1- Virginia Raggi, instance of, human
+        2- Virginia Raggi, occupation, politician
+        3- Virginia Raggi, date of birth, 18 July 1978
+        4- Farhad Zarif, instance of, human
+        5- Farhad Zarif, occupation, Volleyball player
+    output: |-
+      The sentence claims that Virginia Raggi is likely to contest in next presidential election in homeland of Farhad Zarif's wife (whose name isn't identified in the sentence). People can contest in presidential elections of their own country of citizenship. In order for Virginia Raggi to be able to contest in presidential elections in Farhad Zarif's wife's country, these two persons must have the same nationality. Therefore, a helpful rule is:\n
+      Rule: Virginia Raggi must have the same country of citizenship as Farhad Zarif's wife to be able to contest in presidential elections in her country.
+  - input:
+      QUESTION: |-
+        Walid Soliman has repaired several cars during his career.
+        Entities: Walid Soliman
+        Facts: 1- Walid Soliman, instance of, human
+        2- Walid Soliman, occupation, association football player
+        3- Walid Soliman, date of birth, 1 October 1984
+        4- Walid Soliman, place of birth, Cairo
+    output: |-
+      The sentence claims that Walid Soliman has repaired several cars during his career. Typically, mechanics repair cars in their career. However, Walid Soliman is an association football player and not a mechanic. Therefore, a helpful rule is:\n
+      Rule: Walid Soliman must be a mechanic to have repaired several cars during his career.
+      
+      

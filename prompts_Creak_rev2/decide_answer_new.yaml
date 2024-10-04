@@ -1,0 +1,101 @@
+system: >-
+  Task: You are a smart and knowledgeable assistant. A sentence in which a claim is made will be given to you and you are asked to determine whether the sentence is correct or incorrect. A set of general rules and facts that are related to the sentence are also provided to help you. Follow these steps to find the answer:
+  1- Consider the sentence and understand the claim made in it.
+  2- Carefully read the general rules and facts provided to you. Pick the ones that may help you in determining the answer.
+  3- Since you are smart and familiar with the world, if the set of facts and general rule don't explicitly provide the required information, you need to use your knowledge to find the answer. But, you must be careful not to assume things that are not true in the real world. For example, you know that Christians go to church, people who know a profession are able to teach it, etc. Use your knowledge. 
+  Beyond these things that smart and knowledgeable people know, if information about something isn't provided to you, you must assume that it doesn't exist or hasn't happened. For example, if you don't have explicit information about a person's death, you must assume he's alive. If you don't see a fact that states a person has a specific occupation or is member of a specific organization, you must assume that he isn't, etc. This can be helpful in finding the answer. For example, the sentence may claim that a person has a particular job, but none of the facts state that he has that job. In this case, you can assume that he doesn't have that job and answer the question accordingly.
+  4- Give your final answer beginning it with "Yes", "No", or "I don't know". If the sentence was correct, begin your answer with "Yes". If the sentence was incorrect, begin your answer with "No". You are supposed to try your best to give a "Yes" or "No" answer because the sentence is either correct or incorrect. If you tried your best, carefully went through the facts and used your general knowledge, but still couldn't give a certain answer to the question, begin your answer with "I don't know".
+
+input_template: |-
+  Sentence: {{QUESTION}}
+  {% if HINTS %}
+  Hints: {{ HINTS|join('\n') }}
+  {% endif %}
+  {% if GENERAL_RULE %}
+  General Rule: {{GENERAL_RULE}}
+  {% endif %}
+  {% if FACTS %}
+  Facts: {{ FACTS|join('\n') }}
+  {% endif %}
+
+
+few-shot:
+  - input:
+      QUESTION: |-
+        Ali Asiaei was influenced by Hana Beizaei in his works.
+        General rules: 1- The sentence claims that Ali Asiaei was influenced by Hana Beizaei in his works. Typically, a person can influence another person's works if they are both active in the same field.
+        Facts: 1- (Ali Asiaei, is, Iranian director (1900-1950))
+        2- (Ali Asiaei, instance of, human)
+        3- (Ali Asiaei, occupation, director)
+        4- (Ali Asiaei, country of citizenship, Iran)
+        5- (Hana Beizaei, date of birth, 1951/12/26)
+        6- (Hana Beizaei, father, Bahram Beizaie)
+        7- (Hana Beizaei, occupation, director)
+    output: |-
+        Answer: 1- The sentnece claims that Ali Asiaei's works were influenced by Hana Beizaei.
+        2- General rule 1 tells us that a person can influence another person's works if they are both active in the same field. Now, we consider the facts to see if they can help us. Fact 1 and Fact 3 tell us that Ali Asiaei is an Iranian director and Fact 7 tells us that Hana Beizaei is also a director. However, the time they lived in is also important. Fact 1 tells us that Ali Asiaei died in 1950, but Fact 5 tells us that Hana Beizaei was born in 1951 which is after Ali Asiaei's death. Since Ali Asiaei died before Hana Beizaei's birth, he couldn't be influenced by her. Therefore, the answer is: No, Ali Asiaei was not influenced by Hana Beizaei in his works because he died before Hana Beizaei had done any work.
+        3- We already found the required information in the facts. Therefore, we don't need to use our general knowledge.
+        4- the answer is: No, Ali Asiaei was not influenced by Hana Beizaei in his works because he died before Hana Beizaei had done any work.
+
+  - input:
+      QUESTION: |-
+        Gelareh Abbasi uses gogoplata in her job.
+        General rules: 1- The sentence claims that Gelareh Abbasi uses gogoplata. Typically, people who are interested in martial arts are likely to use gogoplata.
+        Facts: 1- Gelareh Abbasi, instance of, human
+        2- Gelareh Abbasi, date of birth, +1991-05-04T00:00:00Z
+        3- Gelareh Abbasi, place of birth, Tehran
+        4- Gelareh Abbasi, country of citizenship, Iran
+        5- Gelareh Abbasi, occupation, actress
+
+    output: >-
+        Answer: 1- The sentence claims that Gelareh Abbasi uses gogoplata while doing her job.
+        2- General rule 1 tells us that people who are interested in martial arts are likely to use gogoplata. We should look for facts indicating her interest in martial arts, but there aren't any such facts. Only Fact 5 tells us that Gelareh Abbasi is an actress which might be helpful.
+        3- We don't have any facts indicating Gelareh Abbasi's interest in martial arts or that she is a martial artist. Furthermore, the question refers to Gelareh Abbasi's job, but her job is being an actress. There are no other facts that with general knowledge can help us determine whether she is interested or involved in martial arts or not. The guidelines tell us that if we don't have explicit information about a property or an event, we must assume that it doesn't exist or hasn't happened. Therefore, we must assume that Gelareh Abbasi doesn't have any other jobs beyond being an actress, and therfore, isn't a martial artist.
+        4- Therefore, the answer is: No, Gelareh Abbasi doesn't use gogoplata in her job because she isn't a martial artist.
+  - input:
+      QUESTION: |-
+        Tom Avni celebrates hanukkah.
+        General rules: The sentence claims that Tom Avni celebrates Hanukkah. Typically, Jewish people who are interested in religous events are likely to celebrate hanukkah.
+        Facts: 1- Tom Avni, is, Israeli actor and television host
+        2- Tom Avni, sex or gender, male
+        3- Tom Avni, date of birth, +1986-04-23T00:00:00Z
+        4- Tom Avni, place of birth, Eilat
+        5- Tom Avni, religion or worldview, Judaism
+        6- Tom Avni, work period (start), 1990
+    output: >-
+        Answer: 1- The sentence claims that Tom Avni celebrates hanukkah.
+        2- General rule 1 tells us that typically Jewish people who are interested in religous events celebrate hanukkah. Fact 5 tells us that Tom Avbu is Jewish. 
+        3- Although the facts don't provide explicit information about Tom Avni's interest in religous ceremonies, we can use our general knowledge of the world. It is widely known that Jews celebrate Jewish ceremonies like hanukkah.
+        4- Therefore, the answer is: Yes, it is likely for Tom Avni to celebrate hanukkah.
+  - input:
+      QUESTION: |-
+        Walid Soliman votes like an anti-capitalist.
+        General rules: 1- The sentence claims that Walid Soliman votes like an anti-capitalist. Typically, people who are against capitalism vote against capitalism.
+        Facts: 1- Walid Soliman, instance of, human
+        2- Walid Soliman, occupation, politician
+        3- Walid Soliman, date of birth, 1 October 1984
+        4- Walid Soliman, place of birth, Cairo
+        5- Walid Soliman, religion or worldview, Communism
+    output: >-
+        Answer: 
+        1- The sentence claims that Walid Soliman votes like a person who is against capitalism.
+        2- General rule 1 tells us that people who are against capitalism, vote like anti-capitalists. Fact 2 tells us that Walid Soliman is a politician. Fact 5 tells us that Walid Soliman is a communist.
+        3- We are allowed to use our knowledge of the world. It is widely known that communists are against capitalism. Therefore, it is plausible to assume that Walid Soliman, being a communist, is an anti-capitalist.
+        4- Therefore, the answer is: Yes, Walid Soliman is an anti-capitalist and would thus vote like an anti-capitalist.
+
+  - input:
+      QUESTION: |-
+        Paolo Maldini's predesessor as the general manager of A.C. Milan comes from the same country as him.
+        General rules: 1- The sentence claims that Paolo Maldini and his predessor as the general manager of A.C. Milan come from the same country. Typically, people whose birthplaces are located in the same country are known to come from the same country.
+        Facts: 1- (Paolo Maldini, spouse, Adriana Fossa)
+        2- (Paolo Maldini, place of birth, Milan)
+        3- (Paolo Maldini, country of citizenship, Italy)
+        4- (Paolo Maldini, occupation, association football player)
+        5- (Paolo Maldini, date of birth, 1968/07/24)
+        6- (Paolo Maldini, position held, General Manager of A.C. Milan; start time, 2018; replaces, Marco Fassone)
+
+    output: >-
+        Answer: 1- The sentence claims that Paolo Maldini's predesessor as the general manager of A.C. Milan comes from the same country as him.
+        2- General rule 1 tells us that the birth places of Paolo Maldini and his predecessor in A.C. Milan must be located in the same country for the answer to be yes. Fact 2 tells us that Paolo Maldini's birth place is Milan which we know is located in Italy. Fact 6 tells us that Paolo Maldini's predecessor was Marco Fassone. However, we don't have any information about Marco Fassone.
+        3- Our general knowledge cannot help us identify a person's birthplace based on his name. Therefore, we can't make any plausible assumption about Marco Fassone's birthplace.
+        4- Therefore, the answer is: I don't know.

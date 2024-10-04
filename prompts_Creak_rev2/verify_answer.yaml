@@ -1,0 +1,91 @@
+system: >-
+  Task: An assitant was asked to determine whether a sentence is correct or incorrect. A number of knowledge graph triples (called facts) and a general rule were also provided to provide more information. The assistant was also asked to use the general knowledge that most smart humans have and avoid asking for obvious information. Using these, the assistant has given an answer. You are a smart evaluator trying to evaluate the proposed answer. Look for any errors and mistakes. You must specially look for these errors:
+  1- The assistant has made assumptions that are not guaranteed to be true. For example, without any information about the end of an entity's life, the assistant has assumed that it ceases to exist. In general, the assistant should only make assumptions that are very likely to be true. If occurunce of an event is not stated in the facts, the assistant should assume that it is not true.
+  2- The assistant has not made enough plausible assumptions that could help him answer the question and lazily said "I don't know". Use your knowledge to find such assumptions and propose such assumptions that will help the assistant to answer the question. For example, communism and capitalism are against each other, Christians believe in trinity, and things like that.
+  3- The assistant has made calculation errors.
+  your evaluation of his answer must follow this template:
+  Evaluation: <your reason> Therefore, my evaluation of the answer is: <your evaluation(beginning with "Yes" or "No")>
+  If the provided answer is correct, begin your answer with "Yes". If the answer is incorrect, state the reason why the answer is incorrect and begin your evaluation with "No". Just state your evaluation of the answer and don't repeat it.
+
+input_template: |-
+  Sentence: {{QUESTION}}
+  {% if HINTS %}
+  Hints: {{ HINTS|join('\n') }}
+  {% endif %}
+  {% if GENERAL_RULE %}
+  General Rule: {{GENERAL_RULE}}
+  {% endif %}
+  {% if FACTS %}
+  Facts: {{ FACTS|join(' / ') }}
+  {% endif %}
+  {% if PROPOSED_ANSWER %}
+  Proposed Answer: {{ PROPOSED_ANSWER }}
+  {% endif %}
+
+few-shot:
+  - input:
+      QUESTION: |-
+          Hirkani forests cease to exist now.
+          General rules: 1- Forests cease to exist when they are destroyed or cut down.
+          Facts: 1- Hirkani forests, instance of, forest
+          2- Hirkani Forests, country, Iran
+          3- Hirkani forests, type of tree, oak
+          4- Hirkani forests, type of tree, walnut
+          5- Hirkani forests, type of tree, maple
+          Proposed Answer: Based on General rule 1, forests cease to exist when they are destroyed or cut down. Fact 1 tells us that Hirkani forests are a forest and other facts tell us that there are multiple precious trees in these forests. Although we don't have explicit information about Hirkani forests being cut down, it's plausible to assume that people have cut them down to use their woods. Therefore, the answer is: Yes, Hirkani forests cease to exist now.
+    output: |-
+      Evaluation: Although the general rule states that forests may cease to exist by reasons such as being destroyed or cut down, we have no evidence of this happening to Hirkani forests. The assumptions made by the assistant are not plausible. Therefore, my evaluation of the answer is: No, the proposed answer is not correct and grounded on the general rules and facts.
+  - input:
+      QUESTION: |-
+          A Pict would be confused by Old English.
+          General rules: 1- A Pict must have not known Old English to be confused by it.
+          Facts: 1- pict, language used, Pictish
+          2- Old English, is, earliest historical form of English.
+          Proposed Answer: Based on General rule 1, A pict would be confused by Old English if they didn't know this language. Since we have no other evidence of picts knowing old English, it is plausible to assume that they didn't. Fact 1 tells us that Picts used the Pictish language, Therefore, the answer is: Yes, a Pict would be confused by Old English.
+    output: |-
+      Evaluation: Based on the genral rule, a pict would be confused by Old English if they didn't know it and Fact 1 tells us that a Pict knew Pictish language. The assumption of Picts not knowing Old English when we have no evidence for it is plausbile and the answer is correct. Therefore, my evaluation of the answer is: Yes, the proposed answer is correct and grounded on the general rules and facts.
+  - input:
+      QUESTION: |-
+          Taghi Arani would vote like an anti-communist politician.
+          General rules: 1- The question is about Taghi Arani's voting behavior. We need to know his political views to answer the question.
+          Facts: 1- Taghi Arani, instance of, human
+          2- Taghi Arani, date of birth, 1921/01/01
+          3- Taghi Arani, place of birth, Tehran
+          4- Taghi Arani, religion or worldview, anti-capitalism
+          5- Taghi Arani, country of citizenship, Iran
+          Proposed Answer: Based on the general rule, we must know about Taghi Arani's voting behavior to answer the question. Since we have no information about his voting behavior or political views, we cannot give a certain answer. Therefore, the answer is: I don't know.
+    output: >-
+      Evaluation: The general rule asks for considering Taghi Arani's voting behavior and political views. Fact 4 tells us that Taghi Arani was an anti-capitalist. Although there are no explicit information about his voting behavior, it is plasuible to assume that since he was anti-capitalist, he would support ideas against capitalism. Since communism is the idea against capitalism, Taghi Arani would support communism. Thus, it is very unlikely for a supporter of communism to vote like an anti-communist politician. Therefore, my evaluation of the answer is: No, the proposed answer is not correct because the assistant could have given the answer using plausible assumptions.
+
+  - input:
+      QUESTION: |-
+          Gelareh Abbasi has Ash in her diet.
+          General rules: 1- Gelareh Abbasi has to like Ash and not to have dietary restrictions that prevent her from eating Ash.
+          Facts: 1- Gelareh Abbasi, instance of, human
+          2- Gelareh Abbasi, date of birth, 1980/01/01
+          3- Gelareh Abbasi, place of birth, Tehran
+          4- Gelareh Abbasi, country of citizenship, Iran
+          5- Ash, is, type of Aush
+          6- Ash, subclass of, soup
+          7- Ash, part of, Iranian cuisine
+          8- Ash, part of, Azerbaijani cuisine
+          Proposed Answer: Based on General rule 1, if Gelareh Abbasi is interested in Ash and she doesn't have dietary restrictions, it is likely for her to eat Ash. Based on Fact 4, Gelareh Abbasi is Iranian and based on Fact 7, Ash is part of Iranian cuisine. Although the facts don't provide explicit information about Gelareh Abbasi's interest in Ash, it is plausible to assume that since most Iranians like Iranian cuisine and Gelareh Abbasi is an Iranian citizen, and we don't have any information about her food restrictions, Ash is likely to be part of her diet. Therefore, the answer is: Yes, Ash is likely to be part of Gelareh Abbasi's diet.
+    output: >-
+      Evaluation: It is plausible to assume that Iranians such as Gelareh Abbasi are likely to enjoy Iranian cuisine, and since we don't have any information available about Gelareh Abbasi's dietary restrictions, it is plausible to assume she doesn't have any. Therefore, my evaluation of the answer is: Yes, the proposed answer is correct and grounded on the general rules and facts.
+    
+
+      Evaluation: Although we don't have any information about Pedro Almunia's dimensions, since he is a human and all human beings are much smaller than a wide-body aircraft such as Airbus A330, it is plausible to assume that Pedro Almunia's dimensions are smaller than the dimensions of an Airbus A330. Therefore, my evaluation of the answer is: No, the proposed answer is not correct. We can make the plausible assumption that Pedro Almunia's dimensions are smaller than the dimensions of an Airbus A330, so he can fit in it.
+  - input:
+      QUESTION: |-
+          Has Kakha Kaladze lived longer than Eldar Kurtanidze?
+          General rules: 1- Kakha Kaladze must have been born before Eldar Kurtanidze to have lived longer than him.
+          Facts: 1- Kakha Kaladze, date of birth, 1978/02/27
+          2- Kakha Kaladze, place of birth, Samtredia
+          3- Kakha Kaladze, country of citizenship, Georgia
+          4- Eldar Kurtanidze, date of birth, 1972/04/16
+          5- Eldar Kurtanidze, place of birth, Tbilisi
+          Proposed Answer: Based on general rule 1, Kakha Kaladze must have been born before Eldar Kurtanidze to have lived longer than him. Fact 1 tells us that Kakha Kaladze was born on 27 February 1978, and Fact 4 tells us that Eldar Kurtanidze was born on 16 April 1972. Therefore, the answer is: Yes, Kakha Kaladze has lived longer than Eldar Kurtanidze.
+    output: >-
+      Evaluation: Fact 1 tells us that Kakha Kaladze was born on 27 February 1978, and Fact 4 tells us that Eldar Kurtanidze was born on 16 April 1972. Since 1978 is after 1972, Kakha Kaladze was born after Eldar Kurtanidze. Therefore, my evaluation of the answer is: No, the proposed answer is incorrect because Kakha Kaladze was born after Eldar Kurtanidze, so he has not lived longer than him.
+
+      

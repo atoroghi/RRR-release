@@ -1,0 +1,72 @@
+system: >-
+  Task: Considering the provided question, the set of general rules, and facts, and by making a number of assumptions an answer has been proposed. Do you consider this answer to be correct and grounded 
+  on the general rules and facts and do you consider the assumptions to be rational and plausible? If yes, respond with "Yes". If not, state the reason why the answer is incorrect and/or not grounded on the general rules and facts.
+
+input_template: |-
+  Question: {{QUESTION}}
+  {% if HINTS %}
+  Hints: {{ HINTS|join('\n') }}
+  {% endif %}
+  {% if GENERAL_RULE %}
+  General Rule: {{GENERAL_RULE}}
+  {% endif %}
+  {% if FACTS %}
+  Facts: {{ FACTS|join(' / ') }}
+  {% endif %}
+  {% if PROPOSED_ANSWER %}
+  Proposed Answer: {{ PROPOSED_ANSWER }}
+  {% endif %}
+
+few-shot:
+  - input:
+      QUESTION: |-
+          Could Georgios Koutsias have worked in the Hellenic Petroleum?
+          General rules: 1- IF Georgios Koutsias was alive during the time the Hellenic Petroleum existed, THEN Georgios Koutsias could have worked in the Hellenic Petroleum.
+          Facts: 1- Georgios Koutsias, is, Greek sportsman
+          2- Georgios Koutsias, instance of, human
+          3- Georgios Koutsias, occupation, association football player
+          4- Georgios Koutsias, country of citizenship, Greece
+          5- Georgios Koutsias, date of birth, 8 February 2004
+          6- Hellenic Petroleum, instance of, business
+          7- Hellenic Petroleum, business, Petroleum industry
+          8- Hellenic Petroleum, country, Greece
+          Proposed Answer: No. Based on Fact 5, Georgios Koutsias was born in 2004, and based on General rule 1, Georgios Koutsias had to be alive when the Hellenic Petroleum was established, but he wasn't.
+          In answering this question, I made the assumption that Hellenic petroleum was established before 2004.
+    output: >-
+      Evaluation: No, although based on general rules Georgios Koutsias had to be alive when Hellenic Petroleum existed and Fact 5 tells us that he is alive since 2004, we don't have any information about the date when the Hellenic petroleum was established.
+      We can't make rational assumptions about the time a company was established without having additional information.
+  - input:
+      QUESTION: |-
+          Did Fakhri Nikzad and Gelareh Abbasi have similar taste in men?
+          General rules: IF Fakhri Nikzad and Gelareh Abbasi had relationships with the same men OR Fakhri Nikzad and Gelareh Abbasi had relationships with men with similar characteristics, THEN Fakhri Nikzad and Gelareh Abbasi have similar taste in men.
+          Facts: 1- Fakhri Nikzad, instance of, human
+          2- Fakhri Nikzad, sex or gender, female
+          3- Fakhri Nikzad, country of citizenship, Iran
+          4- Fakhri Nikzad, manner of death, natural causes
+          5- Fakhri Nikzad, spouse, Asghar Akbari
+          6- Gelareh Abbasi, instance of, human
+          7- Gelareh Abbasi, date of birth, 20 July 1983
+          8- Gelareh Abbasi, place of birth, Tehran
+          9- Gelareh Abbasi, spouse, Asghar Akbari
+          Facts: 1- pict, language used, Pictish
+          Proposed Answer: Yes, based on Fact 1, if Fakhri Nikzad and Gelareh Abbasi had relationships with the same men, then we can infer that they had similar tastes in men.
+          Based on Fact 5, Fakhri Nikzad was married to Asghar Akbari and based on Fact 9, Gelareh Abbasi was also married to Asghar Akbari. 
+          In answering this question, I didn't make any assumptions.
+    output: >-
+      Evaluation: Yes, the proposed answer is correct and grounded on the general rules and facts.
+  - input:
+      QUESTION: |-
+          Is it likely for Tom Avni to celebrate hanukkah?
+          General rules: IF Tom Avni is Jewish AND Tom Avni celebrates the important Jewish ceremonies, THEN it is likely for Tom Avni to celebrate hanukkah.
+          Facts: 1- Tom Avni, is, Israeli actor and television host
+          2- Tom Avni, sex or gender, male
+          3- Tom Avni, date of birth, 20 April 1986
+          4- Tom Avni, place of birth, Eilat
+          5- Tom Avni, religion or worldview, Judaism
+          6- Tom Avni, work period (start), 1990
+          Proposed Answer: Yes, based on General rule 1, Tom Avni must be Jewish and celebrate the important Jewish ceremonies for the answer to be yes. Fact 5 tells us that Tom Avni is Jewish.
+          Although we don't know if Tom Avni celebrates the important Jewish ceremonies, since it is likely for most Jews to celebrate Jewish ceremonies, we can infer that Tom Avni does
+          celebrate hanukkah.
+          In answering this question, I assumed that Tom Avni celebrates the important Jewish ceremonies.
+    output: >-
+      Evaluation: Yes, the proposed answer is correct. The answer is partly grounded on the general rules and facts, and the assumption that most Jews celebrate hanukkah is rational and plausible.

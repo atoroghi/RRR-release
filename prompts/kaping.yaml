@@ -1,0 +1,10 @@
+system: |-
+  You are a helpful assistant.
+
+input_template: |-
+  {% if FACTS %}
+  Below are facts in the form of the triple meaningful to answer the question.
+  {{ FACTS|join('\n') }}
+  {% endif %}
+  Please answer the question: {{ QUESTION }}
+  Answer with either "Yes", "No", or "I don't know". Then provide your explanation.

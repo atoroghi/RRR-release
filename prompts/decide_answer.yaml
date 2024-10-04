@@ -1,0 +1,82 @@
+system: >-
+  Task: Considering the provided question and the set of general rules and provided facts, what is your answer to the question? Begin your answer with one of "Yes", "No", or "I don't know".
+  Indicate the number of facts and general rules that you used to answer the question. Also, you can make plausible and logical assumptions that are very likely to be true in realworld, but you have to mention them.
+  If the current set of general rules and facts is not enough to answer the question and you cannot determine the answer with very plausible assumptions, in the beginning of your answer, you must use "I don't know".
+
+input_template: |-
+  Question: {{QUESTION}}
+  {% if HINTS %}
+  Hints: {{ HINTS|join('\n') }}
+  {% endif %}
+  {% if GENERAL_RULE %}
+  General Rule: {{GENERAL_RULE}}
+  {% endif %}
+  {% if FACTS %}
+  Facts: {{ FACTS|join('\n') }}
+  {% endif %}
+
+
+few-shot:
+  - input:
+      QUESTION: |-
+        Could Georgios Koutsias have served on the House of Lords?
+        General rules: 1- IF Georgios Koutsias was alive during the time the House of Lords existed AND Georgios Koutsias satisfied the criteria for serving on the House of Lords such as being a citizen of the United Kingdom, THEN Georgios Koutsias could have served on the House of Lords.
+        Facts: 1- Georgios Koutsias, is, Greek sportsman
+        2- Georgios Koutsias, instance of, human
+        3- Georgios Koutsias, occupation, association football player
+        4- Georgios Koutsias, country of citizenship, Greece
+        5- Georgios Koutsias, date of birth, 8 February 2004
+        6- House of Lords, instance of, upper house
+        7- House of Lords, part of, Parliament of the United Kingdom
+        8- House of Lords, inception, 1 January 1801
+    output: >-
+      Answer: No, Based on General rule 1, Georgios Koutsias, must have been alive during the time the House of Lords existed. Since the House of Lords existed from 1801 to the present, and Georgios Koutsias was born in 2004, this condition is satisfied.
+      However, based on General rule 1, Georgios Koutsias must have satisfied the criteria for serving on the House of Lords such as being a citizen of the United Kingdom. Since Georgios Koutsias is a citizen of Greece, not the United Kingdom, this condition is not satisfied.
+      In answering this question, I didn't make any assumptions.
+  - input:
+      QUESTION: |-
+        Did Paolo Maldini's wife come from the same country as him?
+        General rules: IF the birth place of Paolo Maldini and Paolo Maldini's wife are located in the same country, THEN Paolo Maldini's wife came from the same country as him.
+        Facts: 1- Paolo Maldini, spouse, Adriana Fossa
+        2- Paolo Maldini, place of birth, Milan
+        3- Paolo Maldini, country of citizenship, Italy
+        4- Paolo Maldini, occupation, association football player
+        5- Paolo Maldini, date of birth, 26 June 1968
+    output: >-
+      Answer: I don't know. Based on General rule 1, the birth places of Paolo Maldini and his wife must be located in the same country for the answer to be yes.
+      Fact 1 tells us that Paolo Maldini's wife is Adriana Fossa, but it doesn't tell us where she was born.
+      We need to know where Adriana Fossa was born to answer this question.
+      In answering this question, I didn't make any assumptions.
+  - input:
+      QUESTION: |-
+        Is Ash Reshteh part of Gelareh Abbasi's diet?
+        General rules: IF Gelareh Abbasi likes Iranian cuisine AND Gelareh Abbasi doesn't have dietary restrictions that prevent her from eating Ash Reshteh, THEN it is likely that Ash Reshteh is part of her diet.
+        Facts: 1- Gelareh Abbasi, instance of, human
+        2- Gelareh Abbasi, date of birth, 20 July 1983
+        3- Gelareh Abbasi, place of birth, Tehran
+        4- Gelareh Abbasi, country of citizenship, Iran
+        5- Ash Reshteh, is, type of Aush
+        6- Ash Reshteh, subclass of, soup
+        7- Ash Reshteh, part of, Iranian cuisine
+        8- Ash Reshteh, part of, Azerbaijani cuisine
+    output: >-  
+        Answer: Yes, based on General rule 1, if Gelareh Abbasi is interested in Iranian cuisine and she doesn't have dietary restrictions, it is likely for her to eat Ash Reshteh.
+        Based on Fact 4, Gelareh Abbasi is Iranian and based on Fact 7, Ash Reshteh is part of Iranian cuisine. Although the facts don't provide explicit information about Gelareh 
+        Abbasi's interest in Ash Reshteh, it is plausible to assume that since most Iranians like Iranian cuisine and Gelareh Abbasi is an Iranian citizen, and we don't have any information
+        about her food restrictions, Ash Reshteh is likely to be part of her diet. Note that the question asks about the likeliness of Ash Reshteh being part of her cuisine.
+        In answering this question, I assumed that most Iranians like Iranian cuisine and Gelareh Abbasi has no dietary restrictions.
+  - input:
+      QUESTION: |-
+        Is it likely for Tom Avni to celebrate hanukkah?
+        General rules: IF Tom Avni is Jewish AND Tom Avni celebrates the important Jewish ceremonies, THEN it is likely for Tom Avni to celebrate hanukkah.
+        Facts: 1- Tom Avni, is, Israeli actor and television host
+        2- Tom Avni, sex or gender, male
+        3- Tom Avni, date of birth, 20 April 1986
+        4- Tom Avni, place of birth, Eilat
+        5- Tom Avni, religion or worldview, Judaism
+        6- Tom Avni, work period (start), 1990
+    output: >-
+      Answer: Yes, based on General rule 1, Tom Avni must be Jewish and celebrate the important Jewish ceremonies for the answer to be yes. Fact 5 tells us that Tom Avni is Jewish.
+      Although we don't know for sure if Tom Avni celebrates the important Jewish ceremonies, since it is likely for most Jews to celebrate Jewish ceremonies, it is plausible to say that Tom Avni is likely to
+      celebrate hanukkah as many Jews do so.
+      In answering this question, I assumed that Tom Avni celebrates the important Jewish ceremonies.

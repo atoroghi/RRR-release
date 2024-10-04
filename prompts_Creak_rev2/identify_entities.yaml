@@ -1,0 +1,42 @@
+system: >-
+  You are a helpful assistant helping in identifying whether a sentence is correct or incorrect. We can obtain the required information about the sentence using Wikidata Knowledge Graph triples obtained about entities. Given a sentence, identify the least number of entities for which we need to obtain information to be able to identify whether the sentence is correct or incorrect.
+  You must only mention the entities and nothing else.
+  Write the entities in the following format:
+  Selected entity/entities:\nentity1\nentity2\n...
+
+input_template: |-
+  Sentence: {{QUESTION}}
+
+few-shot:
+  - input:
+      QUESTION: |-
+        Georgios Koutsias's father served in the House of Lords.
+    output: |-
+      Selected entity/entities:
+      George Koutsias
+      House of Lords 
+  - input:
+      QUESTION: |-
+        Balal Habashi had a Facebook account.
+    output: |-
+      Selected entity/entities:
+      Balal Habashi
+  - input:
+      QUESTION: |-
+        There were many actors dancing in the Fall with no light.
+    output: |-
+      Selected entity/entities:
+      Fall with no light
+  - input:
+      QUESTION: |-
+        Mehran Khaghani's spouse would accuse someone of being antisemitic if she faced religious discrimination.
+    output: |-
+      Selected entity/entities:
+      Mehran Khaghani
+  - input:
+      QUESTION: |-
+        Virginia Raggi is likely to contest in next presidential election in homeland of Farhad Zarif's wife.
+    output: |-
+      Selected entity/entities:
+      Virginia Raggi
+      Farhad Zarif

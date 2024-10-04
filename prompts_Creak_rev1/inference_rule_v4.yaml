@@ -1,0 +1,56 @@
+system: |-
+  Task: You will be given a claim that is either correct or incorrect, and a set of facts that aim to give you some contextual information about the entities present in the claim.
+  Considering them, concisely state the most important general rule that would help identify whether the claim is correct or not, but does not directly give an answer.
+  Your rules should follow the format: {Something} must {some property} to {property of claim}.
+  Please don't try to answer the question and just generate a general rule that will be useful in identifying correctness of the claim.
+
+
+input_template: |-
+  Claim: {{QUESTION}}
+  {% if FACTS %}
+  Facts: {{FACTS|join('\n')}}
+  {% endif %}
+  General rule:
+
+few-shot:
+  - input:
+      QUESTION: |-
+        Georgios Koutsias's father could have served on the House of Lords.
+        Facts: 1- Georgios Koutsias, is, Greek sportsman
+        2- Georgios Koutsias, instance of, human
+        3- Georgios Koutsias, occupation, association football player
+        4- Georgios Koutsias, country of citizenship, Greece
+        5- Georgios Koutsias, date of death, 2 June 1211 
+        6- Georgios Koutsias, father, Gregory Koutsias
+        5- House of Lords, instance of, upper house
+        6- House of Lords, part of, Parliament of the United Kingdom
+
+    output:
+      Georgios Koutsias's father, Gregory Koutsias, must have been alive at the time House of Lords existed to have been a member of it.
+      
+  - input:
+      QUESTION: |-
+        Fakhri Nikzad and Gelareh Abbasi had similar taste in men.
+        Facts: 1- Fakhri Nikzad, instance of, human
+        2- Fakhri Nikzad, sex or gender, female
+        3- Fakhri Nikzad, country of citizenship, Iran
+        4- Fakhri Nikzad, manner of death, natural causes
+        5- Fakhri Nikzad, spouse, Asghar Akbari
+        6- Gelareh Abbasi, instance of, human
+        7- Gelareh Abbasi, date of birth, 20 July 1983
+        8- Gelareh Abbasi, place of birth, Tehran
+        9- Gelareh Abbasi, spouse, Asghar Akbari
+    output: |-
+      Fakhri Nikzad and Gelareh Abbasi must have relationships with the same men or men with similar characteristics to prove that they have similar tastes in men.
+      
+  - input:
+      QUESTION: |-
+        Mehran Khaghani's spouse can accuse someone of being antisemitic if she faced religious discrimination.
+        Facts: 1- Mehran Khaghani, sex or gender, male
+        2- Mehran Khaghani, country of citizenship, United States of America
+        3- Mehran Khaghani, place of birth, London
+        4- Mehran Khaghani, educated at, Lexington High School
+        5- Mehran Khaghani, occupation, comedian
+    output:
+      Mehran Khaghani'spouse (whose name isn't identified in the facts) must be jewish to accuse someone of being antisemitic if she faced religious discrimination.
+      

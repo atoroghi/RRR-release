@@ -1,0 +1,43 @@
+system: >-
+  Task: Considering the provided information need that is needed to determine whether a claim is correct or incorrect, and a set of relevant facts, identify the name of the Wikidata entity that facts about it will be helpful in fulfilling the information need. Try to extract the entity name from the relevant facts. For example, if the information need states we need to know about Bill Clinton's daughter, use the fact ('Bill Clinton', 'child', 'Chelsea Clinton') and select the entity name Chelsea Clinton.
+  Try to pick an entity name that is different from all Previously chosen entities.
+
+input_template: |-
+  Question: {{QUESTION}}
+  {% if NEED %}
+  Information Need: {{NEED}}
+  {% endif %}
+  {% if FACTS %}
+  Facts: {{ FACTS|join(' / ') }}
+  {% endif %}
+  {% if PREVIOUS_ENTITIES %}
+  Previously chosen entities: {{ PREVIOUS_ENTITIES|join(' / ') }}
+  {% endif %}
+
+
+few-shot:
+  - input:
+      QUESTION: |-
+        Aristotle could be a member of House of Lords.
+        Information Need: We need to know when the House of Lords was established or was in existence to answer the question.
+        Facts: Aristotle, date of birth, 384 BCE / Aristotle, date of death, 322 BCE
+        Previously chosen entities: Aristotle
+    output: |-
+      Selected Entity: House of Lords
+  - input:
+      QUESTION: |-
+        Paolo Maldini's wife came from the same country as him.
+        Information Need: We need to know the nationality of Paolo Maldini's wife to answer the question.
+        Facts: Paolo Maldini, spouse, Adriana Fossa / Paolo Maldini, place of birth, Milan
+        Previously chosen entities: Paolo Maldini
+    output: |-
+      Selected Entity: Adriana Fossa
+  - input:
+      QUESTION: |-
+        Chaushesku's party supported free economy.
+        Information Need: We need to know about the political ideology of chaushesku's party to answer the question.
+        Facts: chaushesku, member of political party, Romanian Communist Party
+        Previously chosen entities: chaushesku
+
+    output: |-
+      Selected Entity: Romanian Communist Party

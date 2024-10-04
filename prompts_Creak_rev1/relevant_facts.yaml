@@ -1,0 +1,67 @@
+system: >-
+  Task: You are given a claim that is aimed to be verified based on a general rule and a number of facts. Among these facts, list the most relevant fact(s) for answering the question. 
+  Please just select among the provided facts and don't generate facts on your own.
+  If there are no relevant facts, please just return the word "None".
+
+input_template: |-
+  Question: {{QUESTION}}
+  {% if HINTS %}
+  Hints: {{ HINTS|join('\n') }}
+  {% endif %}
+  {% if GENERAL_RULE %}
+  General Rule: {{GENERAL_RULE}}
+  {% endif %}
+  {% if FACTS %}
+  Facts: {{ FACTS|join('\n') }}
+  {% endif %}
+
+
+
+few-shot:
+  - input:
+      QUESTION: |-
+        Paolo Maldini's wife come from the same country as him.
+        Hints:
+        1- Paolo Maldini: Italian soccer player
+        General Rule: Paolo Maldini and his wife must have the same nationality to come from the same country.
+        Facts:
+        Paolo Maldini, member of clubs, A.C. Milan
+        Paolo Maldini, country of citizenship, Italy
+        Paolo Maldini, child, Christian Maldini
+        Paolo Maldini, child, Daniel Maldini
+        Paolo Maldini, spouse, Adriana Fossa
+        Paolo Maldini, father, Cesare Maldini
+        Paolo Maldini, occupation, association football player
+    output: |-
+      Relevant facts: Paolo Maldini, country of citizenship, Italy / Paolo Maldini, spouse, Adriana Fossa
+  - input:
+      QUESTION: |-
+        Aristotle could have been a member of House of Lords.
+        Hints:
+        1- Aristotle: Classical Greek philosopher and polymath (384-322 BC)
+        2- House of Lords: upper house in the Parliament of the United Kingdom
+        General Rule: Aristotle must have been alive during the time when the House of Lords was established or in existence.
+        Facts: 
+        Aristotle, sex, male
+        Aristotle, date of birth, 384 BCE
+        Aristotle, field of study, philosophy
+        Aristotle, date of death, 322 BCE
+        Aristotle, place of death, Stageira
+    output: |-
+      Relevant facts: Aristotle, date of birth, 384 BCE / Aristotle, date of death, 322
+  - input:
+      QUESTION: |-
+        Mount Fuji would stick out of the Sea of Japan.
+        Hints:
+        1- Mount Fuji: mountain in Yamanashi and Shizuoka Prefectures, Japan.
+        2- Sea of Japan: sea between Japan and Russia.
+        General Rule: The height of Mount Fuji must be greater than the depth of the Sea of Japan to stick out of it.
+        Facts:
+        Mount Fuji, instance of, active volcano
+        Mount Fuji, instance of, highest point
+        Mount Fuji, instance of, isolated peak
+        Mount Fuji, instance of, stratovolcano
+        Mount Fuji, elevation above sea level, 3777.24m
+
+    output: |-
+      Relevant facts: Mount Fuji, elevation above sea level, 3777.24m

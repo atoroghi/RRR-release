@@ -1,0 +1,60 @@
+system: >-
+  Task: Considering the provided question and the set of general rules and provided facts, identify what other facts or information are required to give a certain answer to the question.
+    If the provided facts and axioms are already sufficient, respond with "nothing".
+
+input_template: |-
+  Question: {{QUESTION}}
+  {% if HINTS %}
+  Hints: {{ HINTS|join('\n') }}
+  {% endif %}
+  {% if GENERAL_RULE %}
+  General Rule: {{GENERAL_RULE}}
+  {% endif %}
+  {% if FACTS %}
+  Facts: {{ FACTS|join(' \n ') }}
+  {% endif %}
+
+
+few-shot:
+  - input:
+      QUESTION: |-
+        Could Georgios Koutsias have served on the House of Lords?
+        Hints: 1- Georgios Koutsias: Greek Association football player.
+        2- House of Lords: upper house in the Parliament of the United Kingdom.
+        General rules: 1- IF Georgios Koutsias was alive during the time the House of Lords existed AND Georgios Koutsias satisfied the criteria for serving on the House of Lords such as being a citizen of the United Kingdom, THEN Georgios Koutsias could have served on the House of Lords.
+        Facts: 1- Georgios Koutsias, is, Greek sportsman
+        2- Georgios Koutsias, instance of, human
+        3- Georgios Koutsias, occupation, association football player
+        4- Georgios Koutsias, country of citizenship, Greece
+        5- Georgios Koutsias, date of birth, 8 February 2004
+        6- House of Lords, instance of, upper house
+        7- House of Lords, part of, Parliament of the United Kingdom
+        8- House of Lords, inception, 1 January 1801
+    output: |-
+      Answer: nothing. Based on General rule 1, Georgios Koutsias, must have been alive during the time the House of Lords existed. Since the House of Lords existed from 1801 to the present, and Georgios Koutsias was born in 2004, this condition is satisfied.
+      However, based on General rule 1, Georgios Koutsias must have satisfied the criteria for serving on the House of Lords such as being a citizen of the United Kingdom. Since Georgios Koutsias is a citizen of Greece, not the United Kingdom, this condition is not satisfied.
+
+  - input:
+      QUESTION: |-
+        Did Paolo Maldini's wife come from the same country as him?
+        General rules: IF the birth place of Paolo Maldini and Paolo Maldini's wife are located in the same country, THEN Paolo Maldini's wife came from the same country as him.
+        Facts: 1- Paolo Maldini, spouse, Adriana Fossa
+        2- Paolo Maldini, place of birth, Milan
+        3- Paolo Maldini, country of citizenship, Italy
+        4- Paolo Maldini, occupation, association football player
+        5- Paolo Maldini, date of birth, 26 June 1968
+    output: |-
+      Answer: We need to know the nationality of Adriana Fossa to answer the question.
+  - input:
+      QUESTION: |-
+        Would Mount Damavand stick out of the Caspian see if it was submerged?
+        General rules: IF the height of Mount Damavand is greater than the depth of the Caspian sea, THEN Mount Damavand would stick out of the Caspian sea if it was submerged.
+        Facts: 1- Mount Damavand, instance of, mountain
+        2- Mount Damavand, country, Iran
+        3- Mount Damavand, elevation above sea level, 5610 metre
+        4- Caspian sea, instance of, sea
+        5- Caspian sea, country, Iran
+        6- Caspian sea, area, 386400 square kilometre
+
+    output: |-
+      Answer: We need to know the depth of the Caspian sea to answer the question.

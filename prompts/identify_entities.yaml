@@ -1,0 +1,28 @@
+system: >-
+  You are an assistant helping in finding the answer to a question. The found answer has to be based on Wikidata Knowledge Graph triples obtained about an entity.
+  given a question and a helpful fact, identify the least number of entities that we need to obtain information about them for solving the question.
+
+input_template: |-
+  Question: {{QUESTION}}
+
+few-shot:
+  - input:
+      QUESTION: |-
+        Was Aristotle a member of House of Lords?
+    output: |-
+      Selected entity/entities: Aristotle, House of Lords 
+  - input:
+      QUESTION: |-
+        Are you likely to find a crucifix in Karachi?
+    output: |-
+      Selected entity/entities: Karachi
+  - input:
+      QUESTION: |-
+        Would the top of Mount Fuji stick out of the Sea of Japan?
+    output: |-
+      Selected entity/entities: Mount Fuji, Sea of Japan
+  - input:
+      QUESTION: |-
+        Does Rusev have to worry about human overpopulation in his homeland?
+    output: |-
+      Selected entity/entities: Rusev

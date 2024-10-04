@@ -1,0 +1,86 @@
+system: >-
+  Task: You are a helpful assistant that is trying to help us determine whether a sentence is correct or incorrect. You are given the question, a general rule that will help us determine the correctness or incorrectness of sentence, and a list of knowledge graph triples which we call them facts. Consider the facts and think about their relation to the question and general rule and try to extract the facts that may be helpful. The facts may be insufficient to determine the correctness or incorrectness of sentence, but try your best to extract the relevant facts.
+  Your response must follow this format:
+  <an explanation> Therefore, the relevant facts are: <list of relevant facts>
+  Just copy the selected facts and don't generate facts on your own or adjust the facts in any way.
+  Try your best to select the relevant facts. If there are no relevant facts, just output "None".
+
+input_template: |-
+  Sentence: {{QUESTION}}
+  {% if HINTS %}
+  Hints: {{ HINTS|join('\n') }}
+  {% endif %}
+  {% if GENERAL_RULE %}
+  General Rule: {{GENERAL_RULE}}
+  {% endif %}
+  {% if FACTS %}
+  Facts: {{ FACTS|join('\n') }}
+  {% endif %}
+
+few-shot:
+  - input:
+      QUESTION: |-
+        Paolo Maldini's predecessor as general manager of A.C. Milan came from the same country as him.
+        General Rule: Paolo Maldini and his predecessor as general manager of A.C. Milan must have the same nationality to come from the same country.
+        Facts:
+        1- (Paolo Maldini, member of clubs, A.C. Milan; start time, 1984; end time, 2009)
+        2- (Paolo Maldini, country of citizenship, Italy)
+        3- (Paolo Maldini, child, Christian Maldini)
+        4- (Paolo Maldini, child, Daniel Maldini)
+        5- (Paolo Maldini, spouse, Adriana Fossa; start time, 1994)
+        6- (Paolo Maldini, father, Cesare Maldini)
+        7- (Paolo Maldini, position held, General Manager of A.C. Milan; start time, 2018; replaces, Marco Fassone)
+        8- (Paolo Maldini, occupation, association football player)
+        9- (Paolo Maldini, date of birth, 1968/7/26)
+    output: |-
+      Answer: Although we don't have any facts about Marco Fassone's citizenship, there are some facts relevant to the question. Fact 2 is useful because it informs us of Paolo Maldini's citizenship. Fact 7 is also relevant because it tells us that Paolo Maldini's predecessor as general manager of A.C. Milan was Marco Fassone.
+      Therefore, the relevant facts are: 
+      (Paolo Maldini, country of citizenship, Italy)
+      (Paolo Maldini, position held, General Manager of A.C. Milan; start time, 2018; replaces, Marco Fassone)
+  - input:
+      QUESTION: |-
+        Nights grow longer in the season that Davide Callà was born.
+        General Rule: Davide Callà must be born between late July and late December.
+        Facts: 
+        1- (Davide Callà, instance of, human)
+        2- (Davide Callà, sex or gender, male)
+        3- (Davide Callà, country of citizenship, Italy)
+        4- (Davide Callà, occupation, association football player)
+        5- (Davide Callà, date of birth, 1993/08/06)
+    output: |-
+      Answer: We have facts that help us determine in what season Davide Callà was born. Fact 5 is useful to the question because it informs us of Aristotle's date of birth.
+      Therefore, the relevant facts are:
+      (Davide Callà, date of birth, 1993/08/06)
+  - input:
+      QUESTION: |-
+        Mehran Khaghani's wife would accuse someone of being antisemitic if she faced religious discrimination.
+        General Rule: Mehran Khaghani's wife must be jewish to accuse someone of being antisemitic if he faced religious discrimination.
+        1- (Mehran Khaghani, sex or gender, male)
+        2- (Mehran Khaghani, country of citizenship, United States of America)
+        3- (Mehran Khaghani, place of birth, London)
+        4- (Mehran Khaghani, educated at, Lexington High School)
+        5- (Mehran Khaghani, occupation, comedian)
+        6- (Mehran Khaghani, spouse, Maryam Khaghani)
+
+    output: |-
+      Answer: We have a fact that helps us obtain information about Mehran Khaghani's wife. Fact 6 is useful because it informs us of Mehran Khaghani's wife's name which may be later used to obtain more information about her religion.
+      Therefore, the relevant facts are:
+      (Mehran Khaghani, spouse, Maryam Khaghani)
+  - input:
+      QUESTION: |-
+        Sheikh Zahed could have played a video game.
+        General Rule: Video games should have been released before or during Sheikh Zahed's time and he must have access to video games to play them.
+        Facts:
+        1- (Sheikh Zahed, country of citizenship, Ilkhanate)
+        2- (Sheikh Zahed, place of birth, Lahijan)
+        3- (Sheikh Zahed, place of death, Lankaran)
+        4- (Sheikh Zahed, languages spoken, written or signed, Persian)
+        5- (Sheikh Zahed, occupation, poet)
+        6- (Sheikh Zahed, religion or worldview, Islam)
+        7- (Sheikh Zahed, date of birth, 1216)
+        8- (Sheikh Zahed, date of death, 1301)
+    output: |-
+      Answer: Although there are no facts about the existance of video games, we have information that help us identify Sheikh Zahed's lifespan. Fact 7 is useful to the question because it informs us of Sheikh Zahed's date of birth. Fact 8 is also relevant because it tells us Sheikh Zahed's life ended in 1301.
+      The relevant facts are:
+      (Sheikh Zahed, date of birth, 1216)
+      (Sheikh Zahed, date of death, 1301)
